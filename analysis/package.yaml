@@ -2,6 +2,7 @@ name: alice-analysis
 version: 0.1.0
 dependencies:
 - base
+- lens
 - pdf-toolbox-document
 ghc-options:
 - -Wall
@@ -13,3 +14,10 @@ executable:
   main: Main.hs
   dependencies:
   - alice-analysis
+tests:
+  alice-analysis-tests:
+    source-dirs: test
+    main: Main.hs
+    dependencies:
+    - alice-analysis
+    - hedgehog
