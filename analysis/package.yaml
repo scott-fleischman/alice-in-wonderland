@@ -1,0 +1,15 @@
+name: alice-analysis
+version: 0.1.0
+dependencies:
+- base
+- pdf-toolbox-document
+ghc-options:
+- -Wall
+- -Werror
+library:
+  source-dirs: source
+executable:
+  source-dirs: app
+  main: Main.hs
+  dependencies:
+  - alice-analysis

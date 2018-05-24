@@ -1,0 +1,7 @@
+resolver: lts-11.10
+packages:
+- ./analysis
+extra-deps:
+- pdf-toolbox-document-0.0.7.1
+- pdf-toolbox-content-0.0.5.1
+- pdf-toolbox-core-0.0.4.1
