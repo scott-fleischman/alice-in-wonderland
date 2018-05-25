@@ -1,13 +1,17 @@
 module Alice where
 
-import qualified Control.Monad.IO.Class as Monad.IO
+import           Data.Text (Text)
+import qualified Data.Text as Text
+import qualified Data.Text.IO as Text.IO
 import qualified Pdf.Toolbox.Document as Pdf.Document
+import qualified Pdf.Toolbox.Document.Page as Pdf.Page
+import qualified Pdf.Toolbox.Document.PageNode as Pdf.PageNode
 import qualified System.IO as IO
 
 pdfPath :: FilePath
 pdfPath = "AliceInWonderland.pdf"
 
-run :: FilePath -> IO ()
+run :: FilePath -> IO Text
 run path = do
   result <- IO.withBinaryFile path IO.ReadMode $ \handle ->
     Pdf.Document.runPdfWithHandle handle Pdf.Document.knownFilters $ do
@@ -15,11 +19,18 @@ run path = do
       catalog <- Pdf.Document.documentCatalog pdf
       rootNode <- Pdf.Document.catalogPageNode catalog
       childNodes <- Pdf.Document.pageNodeKids rootNode
-      Monad.IO.liftIO $ mapM_ print childNodes
-      return ()
+      fmap Text.concat $ mapM loadPageText childNodes
   case result of
     Left err -> error $ show err
     Right x -> return x
+  where
+  loadPageText pageNodeRef = do
+    pageNode <- Pdf.PageNode.loadPageNode pageNodeRef
+    case pageNode of
+      Pdf.PageNode.PageTreeNode _ -> return Text.empty
+      Pdf.PageNode.PageTreeLeaf page -> Pdf.Page.pageExtractText page
 
 main :: IO ()
-main = run pdfPath
+main = do
+  allText <- run pdfPath
+  Text.IO.putStrLn allText

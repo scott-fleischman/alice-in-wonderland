@@ -4,6 +4,7 @@ dependencies:
 - base
 - lens
 - pdf-toolbox-document
+- text
 ghc-options:
 - -Wall
 - -Werror

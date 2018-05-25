@@ -3,6 +3,7 @@
 import qualified Alice
 import qualified Control.Monad
 import           Control.Monad.IO.Class (liftIO)
+import qualified Data.Text.IO
 import qualified Hedgehog
 import qualified System.Exit
 import qualified System.IO
@@ -13,7 +14,7 @@ testPdfPath = "../" ++ Alice.pdfPath
 prop_pageCount :: Hedgehog.Property
 prop_pageCount =
   Hedgehog.withTests 1 . Hedgehog.property $ do
-    liftIO $ Alice.run testPdfPath
+    liftIO $ Data.Text.IO.putStrLn =<< Alice.run testPdfPath
 
 tests :: IO Bool
 tests =
