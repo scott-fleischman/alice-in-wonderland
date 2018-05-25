@@ -13,8 +13,7 @@ testPdfPath = "../" ++ Alice.pdfPath
 prop_pageCount :: Hedgehog.Property
 prop_pageCount =
   Hedgehog.withTests 1 . Hedgehog.property $ do
-    pageCount <- liftIO (Alice.getPageCount testPdfPath)
-    Hedgehog.assert $ pageCount == Right 69
+    liftIO $ Alice.run testPdfPath
 
 tests :: IO Bool
 tests =
