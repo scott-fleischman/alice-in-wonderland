@@ -2,6 +2,8 @@ name: alice-analysis
 version: 0.1.0
 dependencies:
 - base
+- bytestring
+- filepath
 - lens
 - pdf-toolbox-document
 - text

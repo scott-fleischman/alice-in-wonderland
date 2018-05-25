@@ -1,15 +1,24 @@
 {-# LANGUAGE TemplateHaskell #-}
 
+import qualified Alice
 import qualified Alice.Pdf
+import qualified Alice.TextFile
 import qualified Control.Monad
 import           Control.Monad.IO.Class (liftIO)
 import qualified Data.Text
 import qualified Hedgehog
 import qualified System.Exit
-import qualified System.IO
+import           System.FilePath ((</>))
+-- import qualified System.IO
+
+testPathPrefix :: FilePath
+testPathPrefix = ".."
 
 testPdfPath :: FilePath
-testPdfPath = "../" ++ Alice.Pdf.pdfPath
+testPdfPath = testPathPrefix </> Alice.Pdf.pdfPath
+
+testTextFilePath :: FilePath
+testTextFilePath = testPathPrefix </> Alice.TextFile.textFilePath
 
 prop_getPdfText :: Hedgehog.Property
 prop_getPdfText =
@@ -23,8 +32,5 @@ tests =
 
 main :: IO ()
 main = do
-  System.IO.hSetBuffering System.IO.stdout System.IO.LineBuffering
-  System.IO.hSetBuffering System.IO.stderr System.IO.LineBuffering
-
   isSuccess <- tests
   Control.Monad.unless isSuccess System.Exit.exitFailure
