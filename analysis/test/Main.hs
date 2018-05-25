@@ -1,20 +1,21 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-import qualified Alice
+import qualified Alice.Pdf
 import qualified Control.Monad
 import           Control.Monad.IO.Class (liftIO)
-import qualified Data.Text.IO
+import qualified Data.Text
 import qualified Hedgehog
 import qualified System.Exit
 import qualified System.IO
 
 testPdfPath :: FilePath
-testPdfPath = "../" ++ Alice.pdfPath
+testPdfPath = "../" ++ Alice.Pdf.pdfPath
 
-prop_pageCount :: Hedgehog.Property
-prop_pageCount =
+prop_getPdfText :: Hedgehog.Property
+prop_getPdfText =
   Hedgehog.withTests 1 . Hedgehog.property $ do
-    liftIO $ Data.Text.IO.putStrLn =<< Alice.run testPdfPath
+    text <- liftIO $ Alice.Pdf.getPdfText testPdfPath
+    Hedgehog.assert $ Data.Text.length text > 0
 
 tests :: IO Bool
 tests =
