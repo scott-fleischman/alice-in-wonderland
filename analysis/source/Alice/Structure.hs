@@ -18,29 +18,40 @@ data Error = MarkerNotFound Text
 parseBook :: Text -> Either Error (Book [Text])
 parseBook input =
   pure Book
-  <*> fmap firstPart firstSplit
-  <*> fmap firstPart secondSplit
-  <*> fmap secondPart secondSplit
+  <*> fmap splitFirst split1
+  <*> fmap splitFirst split2
+  <*> fmap splitSecond split2
   where
   inputLines = Text.splitOn "\r\n" input
-  firstSplit = takeMarker TakeThrough startMarker inputLines
-  secondSplit = firstSplit >>= (takeMarker TakeUntil endMarker . secondPart)
+  split1 = takeCheck (MarkerNotFound startMarker) TakeThrough (== startMarker) inputLines
+  split2 = split1 >>= (takeCheck (MarkerNotFound endMarker) TakeUntil (== endMarker) . splitSecond)
   startMarker = "*** START OF THIS PROJECT GUTENBERG EBOOK ALICE’S ADVENTURES IN WONDERLAND ***"
   endMarker = "End of Project Gutenberg’s Alice’s Adventures in Wonderland, by Lewis Carroll"
 
-data Partition = Partition
-  { firstPart :: [Text]
-  , secondPart :: [Text]
+data Split item = Split
+  { splitFirst :: [item]
+  , splitSecond :: [item]
   }
-firstPartLens :: Applicative f => ([Text] -> f [Text]) -> Partition -> f Partition
-firstPartLens f (Partition x y) = pure Partition <*> f x <*> pure y
+splitFirstLens :: Applicative f => ([item] -> f [item]) -> (Split item -> f (Split item))
+splitFirstLens f (Split x y) = pure Split <*> f x <*> pure y
 
 data TakeOption = TakeThrough | TakeUntil
 
-takeMarker :: TakeOption -> Text -> [Text] -> Either Error Partition
-takeMarker _ marker [] = Left $ MarkerNotFound marker
-takeMarker TakeThrough marker (line : rest) | line == marker = Right $ Partition { firstPart = [line], secondPart = rest }
-takeMarker TakeUntil   marker (line : rest) | line == marker = Right $ Partition { firstPart = [],     secondPart = line : rest }
-takeMarker takeOption marker (line : rest)
-  = Lens.over (Lens._Right . firstPartLens) (line :)
-  $ takeMarker takeOption marker rest
+takeCheck :: Eq item => err -> TakeOption -> (item -> Bool) -> [item] -> Either err (Split item)
+takeCheck err _ _ [] = Left err
+takeCheck _ TakeThrough check (item : rest) | check item = Right $ Split { splitFirst = [item], splitSecond = rest }
+takeCheck _ TakeUntil   check (item : rest) | check item = Right $ Split { splitFirst = [],     splitSecond = item : rest }
+takeCheck err takeOption check (item : rest)
+  = Lens.over (Lens._Right . splitFirstLens) (item :)
+  $ takeCheck err takeOption check rest
+
+data Body chapter = Body
+  { bodyTitle :: [Text]
+  , bodyChapters :: [chapter]
+  }
+
+data Chapter content = Chapter
+  { chapterNumber :: Text
+  , chapterTitle :: Text
+  , chapterContent :: content
+  }
