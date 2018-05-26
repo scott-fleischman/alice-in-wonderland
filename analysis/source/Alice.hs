@@ -11,14 +11,13 @@ run :: FilePath -> IO ()
 run path = do
   text <- Alice.TextFile.loadText path
   putStrLn $ "Text length = " ++ show (Data.Text.length text)
-  result <-
-    case Alice.Structure.parseBook text of
+  body <-
+    case Alice.Structure.parseBody text of
       Left err -> error (show err)
       Right result -> return result
 
-  putStrLn "\nContent:\n"
-  let bodyLines = Alice.Structure.bookBody result
-  mapM_ Data.Text.IO.putStrLn $ filter (Data.Text.isPrefixOf "CHAPTER ") bodyLines
+  Data.Text.IO.putStrLn "\nBody:\n"
+  print body
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath

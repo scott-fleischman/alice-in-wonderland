@@ -3,6 +3,7 @@ version: 0.1.0
 dependencies:
 - base
 - bytestring
+- containers
 - filepath
 - lens
 - pdf-toolbox-document

@@ -2,56 +2,78 @@
 
 module Alice.Structure where
 
-import qualified Control.Lens as Lens
+import           Data.Sequence (Seq, ViewL((:<)), (<|), ViewR((:>)))
+import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
 
-data Book body = Book
-  { bookBefore :: [Text]
-  , bookBody :: body
-  , bookAfter :: [Text]
-  }
+newtype GutenbergPreamble = GutenbergPreamble (Seq Text) deriving Show
+newtype GutenbergPostlude = GutenbergPostlude (Seq Text) deriving Show
+newtype TheEnd = TheEnd Text deriving Show
 
-data Error = MarkerNotFound Text
+data Error
+  = NoGutenbergStartFound
+  | NoGutenbergEndFound
+  | NoTheEndFound
+  | NonTheEndTextFoundAtEnd
   deriving Show
 
-parseBook :: Text -> Either Error (Book [Text])
-parseBook input =
-  pure Book
-  <*> fmap splitFirst split1
-  <*> fmap splitFirst split2
-  <*> fmap splitSecond split2
+data Body = Body
+  { bodyPreamble :: GutenbergPreamble
+  , bodyChapters :: Seq Text
+  , bodyTheEnd :: TheEnd
+  , bodyPostlude :: GutenbergPostlude
+  } deriving Show
+
+parseBody :: Text -> Either Error Body
+parseBody input = do
+  let lineSequence = makeLineSequence input
+  (preamble, afterPreamble) <- parsePreambleFromLeft lineSequence
+  (beforePostlude, postlude) <- parsePostludeFromRight afterPreamble
+  (chapters, theEnd) <- parseTheEndFromRight beforePostlude
+  return
+    Body
+    { bodyPreamble = preamble
+    , bodyChapters = chapters
+    , bodyTheEnd = theEnd
+    , bodyPostlude = postlude
+    }
+
+makeLineSequence :: Text -> Seq Text
+makeLineSequence = Seq.fromList . Text.splitOn "\r\n"
+
+parsePreambleFromLeft :: Seq Text -> Either Error (GutenbergPreamble, Seq Text)
+parsePreambleFromLeft = go (GutenbergPreamble Seq.empty)
   where
-  inputLines = Text.splitOn "\r\n" input
-  split1 = takeCheck (MarkerNotFound startMarker) TakeThrough (== startMarker) inputLines
-  split2 = split1 >>= (takeCheck (MarkerNotFound endMarker) TakeUntil (== endMarker) . splitSecond)
-  startMarker = "*** START OF THIS PROJECT GUTENBERG EBOOK ALICE’S ADVENTURES IN WONDERLAND ***"
-  endMarker = "End of Project Gutenberg’s Alice’s Adventures in Wonderland, by Lewis Carroll"
+  go (GutenbergPreamble soFar) input =
+    case Seq.viewl input of
+      Seq.EmptyL -> Left NoGutenbergStartFound
+      line :< rest ->
+        let newPreamble = GutenbergPreamble (line <| soFar)
+        in if line == "*** START OF THIS PROJECT GUTENBERG EBOOK ALICE’S ADVENTURES IN WONDERLAND ***"
+          then Right (newPreamble, rest)
+          else go newPreamble rest
 
-data Split item = Split
-  { splitFirst :: [item]
-  , splitSecond :: [item]
-  }
-splitFirstLens :: Applicative f => ([item] -> f [item]) -> (Split item -> f (Split item))
-splitFirstLens f (Split x y) = pure Split <*> f x <*> pure y
+parsePostludeFromRight :: Seq Text -> Either Error (Seq Text, GutenbergPostlude)
+parsePostludeFromRight = go (GutenbergPostlude Seq.empty)
+  where
+  go (GutenbergPostlude soFar) input =
+    case Seq.viewr input of
+      Seq.EmptyR -> Left NoGutenbergEndFound
+      rest :> line ->
+        let newPostlude = GutenbergPostlude (line <| soFar)
+        in if line == "End of Project Gutenberg’s Alice’s Adventures in Wonderland, by Lewis Carroll"
+          then Right (rest, newPostlude)
+          else go newPostlude rest
 
-data TakeOption = TakeThrough | TakeUntil
+parseTheEndFromRight :: Seq Text -> Either Error (Seq Text, TheEnd)
+parseTheEndFromRight input =
+  case Seq.viewr input of
+    Seq.EmptyR -> Left NoTheEndFound
+    rest :> line ->
+      case () of
+        () | (Text.null . Text.strip) line -> parseTheEndFromRight rest
+        () | Text.strip line == "THE END" -> Right (rest, TheEnd line)
+        () -> Left NonTheEndTextFoundAtEnd
 
-takeCheck :: Eq item => err -> TakeOption -> (item -> Bool) -> [item] -> Either err (Split item)
-takeCheck err _ _ [] = Left err
-takeCheck _ TakeThrough check (item : rest) | check item = Right $ Split { splitFirst = [item], splitSecond = rest }
-takeCheck _ TakeUntil   check (item : rest) | check item = Right $ Split { splitFirst = [],     splitSecond = item : rest }
-takeCheck err takeOption check (item : rest)
-  = Lens.over (Lens._Right . splitFirstLens) (item :)
-  $ takeCheck err takeOption check rest
-
-data Body chapter = Body
-  { bodyTitle :: [Text]
-  , bodyChapters :: [chapter]
-  }
-
-data Chapter content = Chapter
-  { chapterNumber :: Text
-  , chapterTitle :: Text
-  , chapterContent :: content
-  }
+--  matchesChapter = Text.isPrefixOf "CHAPTER "
