@@ -18,13 +18,13 @@ data Error = MarkerNotFound Text
 parseBook :: Text -> Either Error (Book [Text])
 parseBook input =
   pure Book
-  <*> fmap firstPart initialParts
-  <*> fmap firstPart remainderPart
-  <*> fmap secondPart remainderPart
+  <*> fmap firstPart firstSplit
+  <*> fmap firstPart secondSplit
+  <*> fmap secondPart secondSplit
   where
   inputLines = Text.splitOn "\r\n" input
-  initialParts = takeThroughMarker startMarker inputLines
-  remainderPart = initialParts >>= (takeThroughMarker endMarker . secondPart)
+  firstSplit = takeMarker TakeThrough startMarker inputLines
+  secondSplit = firstSplit >>= (takeMarker TakeUntil endMarker . secondPart)
   startMarker = "*** START OF THIS PROJECT GUTENBERG EBOOK ALICE’S ADVENTURES IN WONDERLAND ***"
   endMarker = "End of Project Gutenberg’s Alice’s Adventures in Wonderland, by Lewis Carroll"
 
@@ -35,9 +35,12 @@ data Partition = Partition
 firstPartLens :: Applicative f => ([Text] -> f [Text]) -> Partition -> f Partition
 firstPartLens f (Partition x y) = pure Partition <*> f x <*> pure y
 
-takeThroughMarker :: Text -> [Text] -> Either Error Partition
-takeThroughMarker marker [] = Left $ MarkerNotFound marker
-takeThroughMarker marker (line : rest) | line == marker = Right $ Partition { firstPart = [line], secondPart = rest }
-takeThroughMarker marker (line : rest)
+data TakeOption = TakeThrough | TakeUntil
+
+takeMarker :: TakeOption -> Text -> [Text] -> Either Error Partition
+takeMarker _ marker [] = Left $ MarkerNotFound marker
+takeMarker TakeThrough marker (line : rest) | line == marker = Right $ Partition { firstPart = [line], secondPart = rest }
+takeMarker TakeUntil   marker (line : rest) | line == marker = Right $ Partition { firstPart = [],     secondPart = line : rest }
+takeMarker takeOption marker (line : rest)
   = Lens.over (Lens._Right . firstPartLens) (line :)
-  $ takeThroughMarker marker rest
+  $ takeMarker takeOption marker rest

@@ -20,7 +20,7 @@ run path = do
   print $ Alice.Structure.bookBody result
 
   putStrLn "After:"
-  print $ Alice.Structure.bookBefore result
+  print $ Alice.Structure.bookAfter result
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath

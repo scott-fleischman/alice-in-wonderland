@@ -1,6 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-import qualified Alice
 import qualified Alice.Pdf
 import qualified Alice.TextFile
 import qualified Control.Monad
