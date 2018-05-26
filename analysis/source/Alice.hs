@@ -3,6 +3,7 @@ module Alice where
 import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Data.Text
+import qualified Data.Text.IO
 
 run :: FilePath -> IO ()
 run path = do
@@ -13,14 +14,8 @@ run path = do
       Left err -> error (show err)
       Right result -> return result
 
-  putStrLn "Before:"
-  print $ Alice.Structure.bookBefore result
-
-  putStrLn "\n\n\nBody:"
-  print $ Alice.Structure.bookBody result
-
-  putStrLn "After:"
-  print $ Alice.Structure.bookAfter result
+  putStrLn "\nContent:\n"
+  mapM_ Data.Text.IO.putStrLn $ Alice.Structure.bookBody result
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath
