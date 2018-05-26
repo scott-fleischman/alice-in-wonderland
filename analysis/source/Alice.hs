@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Alice where
 
 import qualified Alice.Structure
@@ -15,7 +17,8 @@ run path = do
       Right result -> return result
 
   putStrLn "\nContent:\n"
-  mapM_ Data.Text.IO.putStrLn $ Alice.Structure.bookBody result
+  let bodyLines = Alice.Structure.bookBody result
+  mapM_ Data.Text.IO.putStrLn $ filter (Data.Text.isPrefixOf "CHAPTER ") bodyLines
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath
