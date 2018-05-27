@@ -9,6 +9,7 @@ import qualified Data.Text as Text
 
 newtype GutenbergPreamble = GutenbergPreamble (Seq Text) deriving Show
 newtype GutenbergPostlude = GutenbergPostlude (Seq Text) deriving Show
+newtype Title = Title (Seq Text) deriving Show
 newtype TheEnd = TheEnd Text deriving Show
 
 data Error
@@ -16,10 +17,12 @@ data Error
   | NoGutenbergEndFound
   | NoTheEndFound
   | NonTheEndTextFoundAtEnd
+  | NoChapterFound
   deriving Show
 
 data Body = Body
   { bodyPreamble :: GutenbergPreamble
+  , bodyTitle :: Title
   , bodyChapters :: Seq Text
   , bodyTheEnd :: TheEnd
   , bodyPostlude :: GutenbergPostlude
@@ -30,10 +33,12 @@ parseBody input = do
   let lineSequence = makeLineSequence input
   (preamble, afterPreamble) <- parsePreambleFromLeft lineSequence
   (beforePostlude, postlude) <- parsePostludeFromRight afterPreamble
-  (chapters, theEnd) <- parseTheEndFromRight beforePostlude
+  (beforeTheEnd, theEnd) <- parseTheEndFromRight beforePostlude
+  (title, chapters) <- parseTitleFromLeft beforeTheEnd
   return
     Body
     { bodyPreamble = preamble
+    , bodyTitle = title
     , bodyChapters = chapters
     , bodyTheEnd = theEnd
     , bodyPostlude = postlude
@@ -70,10 +75,20 @@ parseTheEndFromRight :: Seq Text -> Either Error (Seq Text, TheEnd)
 parseTheEndFromRight input =
   case Seq.viewr input of
     Seq.EmptyR -> Left NoTheEndFound
-    rest :> line ->
-      case () of
-        () | (Text.null . Text.strip) line -> parseTheEndFromRight rest
-        () | Text.strip line == "THE END" -> Right (rest, TheEnd line)
-        () -> Left NonTheEndTextFoundAtEnd
+    rest :> line | (Text.null . Text.strip) line -> parseTheEndFromRight rest
+    rest :> line | Text.strip line == "THE END" -> Right (rest, TheEnd line)
+    _ :> _ -> Left NonTheEndTextFoundAtEnd
 
---  matchesChapter = Text.isPrefixOf "CHAPTER "
+parseTitleFromLeft :: Seq Text -> Either Error (Title, Seq Text)
+parseTitleFromLeft = go (Title Seq.empty)
+  where
+  go (Title soFar) input =
+    case Seq.viewl input of
+      Seq.EmptyL -> Left NoChapterFound
+      line :< rest ->
+        if matchesChapter line
+          then Right (Title soFar, line <| rest)
+          else go (Title (line <| soFar)) rest
+
+matchesChapter :: Text -> Bool
+matchesChapter = Text.isPrefixOf "CHAPTER "

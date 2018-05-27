@@ -17,7 +17,7 @@ run path = do
       Right result -> return result
 
   Data.Text.IO.putStrLn "\nBody:\n"
-  print body
+  print $ Alice.Structure.bodyChapters body
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath
