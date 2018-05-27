@@ -4,6 +4,7 @@ module Alice where
 
 import qualified Alice.Structure
 import qualified Alice.TextFile
+import qualified Data.Sequence as Seq
 import qualified Data.Text
 import qualified Data.Text.IO
 
@@ -16,8 +17,8 @@ run path = do
       Left err -> error (show err)
       Right result -> return result
 
-  Data.Text.IO.putStrLn "\nBody:\n"
-  print $ Alice.Structure.bodyChapters body
+  Data.Text.IO.putStrLn "\nChapter Count:"
+  print $ Seq.length $ Alice.Structure.bodyChapters body
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath

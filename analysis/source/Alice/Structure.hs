@@ -123,7 +123,7 @@ parseChapterFromLeft fullInput =
     case Seq.viewl input of
       Seq.EmptyL -> (ChapterContents soFar, Seq.empty)
       line :< rest | matchesChapter line -> (ChapterContents soFar, line <| rest)
-      line :< rest -> (ChapterContents (line <| soFar), rest)
+      line :< rest -> buildContents (ChapterContents (line <| soFar)) rest
 
 matchesChapter :: Text -> Bool
 matchesChapter = Text.isPrefixOf "CHAPTER "
