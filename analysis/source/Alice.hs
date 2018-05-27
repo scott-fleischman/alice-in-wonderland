@@ -5,7 +5,6 @@ module Alice where
 import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Data.Text
-import qualified Data.Text.IO
 
 run :: FilePath -> IO ()
 run path = do
@@ -16,8 +15,14 @@ run path = do
       Left err -> error (show err)
       Right result -> return result
 
-  Data.Text.IO.putStrLn "\nChapter Count:"
-  mapM_ print . fmap (\x -> (Alice.Structure.chapterNumber x, Alice.Structure.chapterTitle x)) . Alice.Structure.bodyChapters $ body
+  let chapters = Alice.Structure.bodyChapters body
+  putStrLn $ "\nChapter Count: " ++  (show . length) chapters
+  mapM_ printChapter chapters
+  where
+  printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
+    putStrLn $ show number ++ ". " ++ show title
+    mapM_ print paragraphs
+    putStrLn "\n"
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath
