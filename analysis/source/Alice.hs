@@ -17,7 +17,7 @@ run path = do
       Right result -> return result
 
   Data.Text.IO.putStrLn "\nChapter Count:"
-  mapM_ print . fmap Alice.Structure.chapterTitle . Alice.Structure.bodyChapters $ body
+  mapM_ print . fmap (\x -> (Alice.Structure.chapterNumber x, Alice.Structure.chapterTitle x)) . Alice.Structure.bodyChapters $ body
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath

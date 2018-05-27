@@ -7,6 +7,7 @@ dependencies:
 - filepath
 - lens
 - pdf-toolbox-document
+- roman-numerals
 - text
 ghc-options:
 - -Wall

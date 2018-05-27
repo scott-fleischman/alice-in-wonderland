@@ -6,10 +6,12 @@ import           Data.Sequence (Seq, ViewL((:<)), (<|), (|>), ViewR((:>)))
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
+import qualified Text.Numeral.Roman as Numeral.Roman
 
 newtype GutenbergPreamble = GutenbergPreamble (Seq Text) deriving Show
 newtype GutenbergPostlude = GutenbergPostlude (Seq Text) deriving Show
 newtype BookTitle = BookTitle (Seq Text) deriving Show
+newtype ChapterNumber = ChapterNumber Int deriving Show
 newtype ChapterTitle = ChapterTitle Text deriving Show
 newtype ChapterContents = ChapterContents (Seq Text) deriving Show
 newtype TheEnd = TheEnd Text deriving Show
@@ -20,7 +22,10 @@ data Error
   | NoTheEndFound
   | NonTheEndTextFoundAtEnd
   | NoChapterFound
-  | InvalidChapterTitle Text
+  | InvalidChapterHeading Text
+  | ChapterHeadingDotMismatch Text
+  | InvalidRomanNumeral Text
+  | EmptyChapterTitle
   deriving Show
 
 data Body = Body
@@ -32,7 +37,8 @@ data Body = Body
   } deriving Show
 
 data Chapter = Chapter
-  { chapterTitle :: ChapterTitle
+  { chapterNumber :: ChapterNumber
+  , chapterTitle :: ChapterTitle
   , chapterContents :: ChapterContents
   } deriving Show
 
@@ -106,17 +112,18 @@ parseAllChaptersFromLeft = go Seq.empty
     result <- parseChapterFromLeft input
     case result of
       Left () -> return chapters
-      Right (title, contents, rest) -> go (chapters |> Chapter title contents) rest
+      Right (chapter, rest) -> go (chapters |> chapter) rest
 
-parseChapterFromLeft :: Seq Text -> Either Error (Either () (ChapterTitle, ChapterContents, Seq Text))
+parseChapterFromLeft :: Seq Text -> Either Error (Either () (Chapter, Seq Text))
 parseChapterFromLeft fullInput =
   case Seq.viewl fullInput of
     Seq.EmptyL -> Right (Left ())
     line :< rest | (Text.null . Text.strip) line -> parseChapterFromLeft rest
-    line :< rest | matchesChapter line ->
+    line :< rest | matchesChapter line -> do
+      (number, title) <- parseChapterHeading line
       let (contents, moreChapters) = buildContents (ChapterContents Seq.empty) rest
-      in Right (Right (ChapterTitle line, contents, moreChapters))
-    line :< _ -> Left $ InvalidChapterTitle line
+      Right (Right (Chapter number title contents, moreChapters))
+    line :< _ -> Left $ InvalidChapterHeading line
   where
   buildContents :: ChapterContents -> Seq Text -> (ChapterContents, Seq Text)
   buildContents (ChapterContents soFar) input =
@@ -126,4 +133,26 @@ parseChapterFromLeft fullInput =
       line :< rest -> buildContents (ChapterContents (line <| soFar)) rest
 
 matchesChapter :: Text -> Bool
-matchesChapter = Text.isPrefixOf "CHAPTER "
+matchesChapter = Text.isPrefixOf chapterPrefix
+
+chapterPrefix :: Text
+chapterPrefix = "CHAPTER "
+
+parseChapterHeading :: Text -> Either Error (ChapterNumber, ChapterTitle)
+parseChapterHeading input = do
+  numberDotTitle <-
+    case Text.stripPrefix chapterPrefix input of
+      Nothing -> Left $ InvalidChapterHeading input
+      Just rest -> Right rest
+  let
+    dotInfix = ". "
+    (beforeDot, dotAndAfter) = Text.breakOn dotInfix numberDotTitle
+  number <-
+    case Numeral.Roman.fromRoman beforeDot of
+      Nothing -> Left $ InvalidRomanNumeral beforeDot
+      Just number -> Right number
+  title <-
+    case Text.stripPrefix dotInfix dotAndAfter of
+      Nothing -> Left $ ChapterHeadingDotMismatch dotAndAfter
+      Just title -> Right title
+  Right (ChapterNumber number, ChapterTitle title)
