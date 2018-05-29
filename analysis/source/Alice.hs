@@ -23,10 +23,16 @@ run path = do
   printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
     putStrLn $ show number ++ ". " ++ show title
     putStrLn ""
-    mapM_ printParagraphSeq paragraphs
+    mapM_ printParagraphFormat paragraphs
     putStrLn "\n\n\n"
-  printParagraphSeq (Alice.Structure.ParagraphSeq texts) = do
+  printParagraphFormat (Alice.Structure.ParagraphFormatPlain text) = do
+    Data.Text.IO.putStrLn text
+    putStrLn ""
+  printParagraphFormat (Alice.Structure.ParagraphFormatIndented texts) = do
     mapM_ Data.Text.IO.putStrLn texts
+    putStrLn ""
+  printParagraphFormat Alice.Structure.ParagraphFormatStarDivision = do
+    putStrLn " * * * (star divison) * * * "
     putStrLn ""
 
 main :: IO ()

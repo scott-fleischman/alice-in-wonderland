@@ -2,7 +2,8 @@
 
 module Alice.Structure where
 
--- import qualified Data.Maybe as Maybe
+import qualified Data.Char as Char
+import qualified Data.Foldable as Foldable
 import           Data.Sequence (Seq, ViewL((:<)), (<|), (|>), ViewR((:>)))
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
@@ -17,12 +18,6 @@ newtype ChapterTitle = ChapterTitle Text deriving Show
 newtype ChapterContents = ChapterContents (Seq Text) deriving Show
 newtype TheEnd = TheEnd Text deriving Show
 newtype ParagraphSeq = ParagraphSeq (Seq Text) deriving Show
-newtype ParagraphText = ParagraphText Text deriving Show
-
-data Chunk
-  = ChunkParagraph ParagraphSeq
-  | ChunkStarDivision
-  deriving Show
 
 data Error
   = NoGutenbergStartFound
@@ -35,6 +30,7 @@ data Error
   | InvalidRomanNumeral Text
   | EmptyChapterTitle
   | EmptyParagraph
+  | InvalidStarParagraphCount Int
   deriving Show
 
 data Body = Body
@@ -49,8 +45,14 @@ data Chapter = Chapter
   { chapterNumber :: ChapterNumber
   , chapterTitle :: ChapterTitle
   , chapterContents :: ChapterContents
-  , chapterParagraphs :: Seq ParagraphSeq
+  , chapterParagraphs :: Seq ParagraphFormat
   } deriving Show
+
+data ParagraphFormat
+  = ParagraphFormatPlain Text
+  | ParagraphFormatIndented (Seq Text)
+  | ParagraphFormatStarDivision
+  deriving Show
 
 parseBody :: Text -> Either Error Body
 parseBody input = do
@@ -132,8 +134,9 @@ parseChapterFromLeft fullInput =
     line :< rest | matchesChapter line -> do
       (number, title) <- parseChapterHeading line
       let (ChapterContents contents, moreChapters) = buildContents (ChapterContents Seq.empty) rest
-      paragraphs <- parseParagraphSeqs contents
-      Right (Right (Chapter number title (ChapterContents contents) paragraphs, moreChapters))
+      paragraphSeqs <- parseParagraphSeqs contents
+      paragraphFormats <- parseParagraphFormats paragraphSeqs
+      Right (Right (Chapter number title (ChapterContents contents) paragraphFormats, moreChapters))
     line :< _ -> Left $ InvalidChapterHeading line
   where
   buildContents :: ChapterContents -> Seq Text -> (ChapterContents, Seq Text)
@@ -192,20 +195,32 @@ parseParagraphSeqs = go Seq.empty
       Left err -> Left err
       Right (p, more) -> go (paragraphs |> p) more
 
--- parseChunks :: Seq Paragraph -> Either Error (Seq Chunk)
--- parseChunks = go Seq.empty
---   where
---   go chunks input =
---     case Seq.viewl input of
---       Seq.EmptyL -> Right Seq.empty
---       (Paragraph paraLines) :< rest ->
---         let
---           paraText = (Text.concat . Seq.toList) paraLines
---           hasStar = Maybe.isJust (Text.find (== '*') paraText)
---   getStarLineCount numberSoFar input =
---     case Seq.viewl input of
---       Seq.EmptyL -> Right Seq.empty
---       (Paragraph paraLines) :< rest ->
---         let
---           paraText = (Text.concat . Seq.toList) paraLines
---           hasStar = Maybe.isJust (Text.find (== '*') paraText)
+parseParagraphFormats :: Seq ParagraphSeq -> Either Error (Seq ParagraphFormat)
+parseParagraphFormats = go Seq.empty
+  where
+  go paras input =
+    let (starParaCount, afterStars) = getStarParaCount 0 input
+    in if starParaCount == 0
+      then
+          case Seq.viewl input of
+            Seq.EmptyL -> Right paras
+            ParagraphSeq paraLines :< rest ->
+              let
+                paraText = (Text.intercalate " " . Foldable.toList) paraLines
+                startsWithSpace = (not . Text.null) paraText && (Char.isSpace . Text.head) paraText
+              in if startsWithSpace
+                then go (paras |> ParagraphFormatIndented paraLines) rest
+                else go (paras |> ParagraphFormatPlain paraText) rest
+      else
+        if starParaCount == 3
+          then go (paras |> ParagraphFormatStarDivision) afterStars
+          else Left $ InvalidStarParagraphCount starParaCount
+
+  getStarParaCount numberSoFar input =
+    case Seq.viewl input of
+      Seq.EmptyL -> (numberSoFar, Seq.empty)
+      ParagraphSeq paraLines :< rest ->
+        let paraText = (Text.concat . Foldable.toList) paraLines
+        in if Text.all (\c -> Char.isSpace c || c == '*') paraText
+          then getStarParaCount (numberSoFar + 1) rest
+          else (numberSoFar, rest)
