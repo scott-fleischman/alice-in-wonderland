@@ -15,7 +15,8 @@ flattenParagraphFormat editionOption (ParagraphFormatLaterEdition paraLines) =
   case editionOption of
     EarlyEdition -> Nothing
     LaterEdition -> Just . flattenParagraphLines $ paraLines
-flattenParagraphFormat _ (ParagraphFormatStarDivision) = Nothing
+flattenParagraphFormat _ ParagraphFormatStarDivision = Nothing
+flattenParagraphFormat _ ParagraphFormatChorusMarker = Nothing
 
 flattenParagraphLines :: Seq Text -> Text
 flattenParagraphLines = Text.intercalate " " . fmap Text.strip . Foldable.toList

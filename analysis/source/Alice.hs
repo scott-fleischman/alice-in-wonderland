@@ -26,7 +26,7 @@ printChapter :: Alice.Structure.Chapter -> IO ()
 printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
   putStrLn $ show number ++ ". " ++ show title
   putStrLn ""
-  mapM_ printParagraphFlat paragraphs
+  mapM_ printParagraphFormat paragraphs
   putStrLn "\n\n\n"
 
 printParagraphFlat :: Alice.Structure.ParagraphFormat -> IO ()
@@ -51,6 +51,9 @@ printParagraphFormat (Alice.Structure.ParagraphFormatLaterEdition texts) = do
   putStrLn ""
 printParagraphFormat Alice.Structure.ParagraphFormatStarDivision = do
   putStrLn " * * * (star divison) * * * "
+  putStrLn ""
+printParagraphFormat Alice.Structure.ParagraphFormatChorusMarker = do
+  putStrLn "   --CHORUS.-- "
   putStrLn ""
 
 main :: IO ()

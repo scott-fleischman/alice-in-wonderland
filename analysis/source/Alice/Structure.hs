@@ -31,7 +31,9 @@ data ParagraphFormat
   = ParagraphFormatPlain Text
   | ParagraphFormatIndented (Seq Text)
   | ParagraphFormatLaterEdition (Seq Text)
+  | ParagraphFormatChorusMarker
   | ParagraphFormatStarDivision
   deriving Show
 
 data EditionOption = EarlyEdition | LaterEdition
+data WordInParagraph = NotLastWordInParagraph | IsLastWordInParagraph

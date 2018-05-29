@@ -192,9 +192,11 @@ parseParagraphFormats = go Seq.empty
                             Just strippedLastLine -> go (paras |> ParagraphFormatLaterEdition (beforeLastLine |> strippedLastLine)) restParas
                     else
                       let startsWithSpace = (not . Text.null) firstLine && (Char.isSpace . Text.head) firstLine
-                      in if startsWithSpace
-                        then go (paras |> ParagraphFormatIndented paraLines) restParas
-                        else
+                      in case startsWithSpace of
+                        True | ((== "CHORUS.") . Text.strip . Text.intercalate " " . Foldable.toList) paraLines ->
+                          go (paras |> ParagraphFormatChorusMarker) restParas
+                        True ->  go (paras |> ParagraphFormatIndented paraLines) restParas
+                        False ->
                           let spacedText = (Text.intercalate " " . Foldable.toList) paraLines
                           in go (paras |> ParagraphFormatPlain spacedText) restParas
       else
