@@ -3,6 +3,7 @@
 module Alice where
 
 import qualified Alice.Parse
+import qualified Alice.Sentence
 import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Data.Text
@@ -24,21 +25,30 @@ run path = do
   printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
     putStrLn $ show number ++ ". " ++ show title
     putStrLn ""
-    mapM_ printParagraphFormat paragraphs
+    mapM_ printParagraphWords paragraphs
     putStrLn "\n\n\n"
-  printParagraphFormat (Alice.Structure.ParagraphFormatPlain text) = do
-    Data.Text.IO.putStrLn text
-    putStrLn ""
-  printParagraphFormat (Alice.Structure.ParagraphFormatIndented texts) = do
-    mapM_ Data.Text.IO.putStrLn texts
-    putStrLn ""
-  printParagraphFormat (Alice.Structure.ParagraphFormatLaterEdition texts) = do
-    putStrLn "  [later edition:]"
-    mapM_ Data.Text.IO.putStrLn texts
-    putStrLn ""
-  printParagraphFormat Alice.Structure.ParagraphFormatStarDivision = do
-    putStrLn " * * * (star divison) * * * "
-    putStrLn ""
+  printParagraphWords para = do
+    let optionalText = Alice.Sentence.flattenParagraphFormat Alice.Structure.LaterEdition para
+    case optionalText of
+      Just text -> do
+        Data.Text.IO.putStrLn text
+        putStrLn ""
+      Nothing -> return ()
+
+printParagraphFormat :: Alice.Structure.ParagraphFormat -> IO ()
+printParagraphFormat (Alice.Structure.ParagraphFormatPlain text) = do
+  Data.Text.IO.putStrLn text
+  putStrLn ""
+printParagraphFormat (Alice.Structure.ParagraphFormatIndented texts) = do
+  mapM_ Data.Text.IO.putStrLn texts
+  putStrLn ""
+printParagraphFormat (Alice.Structure.ParagraphFormatLaterEdition texts) = do
+  putStrLn "  [later edition:]"
+  mapM_ Data.Text.IO.putStrLn texts
+  putStrLn ""
+printParagraphFormat Alice.Structure.ParagraphFormatStarDivision = do
+  putStrLn " * * * (star divison) * * * "
+  putStrLn ""
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath
