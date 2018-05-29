@@ -31,6 +31,10 @@ run path = do
   printParagraphFormat (Alice.Structure.ParagraphFormatIndented texts) = do
     mapM_ Data.Text.IO.putStrLn texts
     putStrLn ""
+  printParagraphFormat (Alice.Structure.ParagraphFormatLaterEdition texts) = do
+    putStrLn "  [later edition:]"
+    mapM_ Data.Text.IO.putStrLn texts
+    putStrLn ""
   printParagraphFormat Alice.Structure.ParagraphFormatStarDivision = do
     putStrLn " * * * (star divison) * * * "
     putStrLn ""

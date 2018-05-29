@@ -31,6 +31,8 @@ data Error
   | EmptyChapterTitle
   | EmptyParagraph
   | InvalidStarParagraphCount Int
+  | LaterEditionEmpty
+  | LaterEditionMissingCloseBracket Text
   deriving Show
 
 data Body = Body
@@ -51,6 +53,7 @@ data Chapter = Chapter
 data ParagraphFormat
   = ParagraphFormatPlain Text
   | ParagraphFormatIndented (Seq Text)
+  | ParagraphFormatLaterEdition (Seq Text)
   | ParagraphFormatStarDivision
   deriving Show
 
@@ -204,13 +207,26 @@ parseParagraphFormats = go Seq.empty
       then
           case Seq.viewl input of
             Seq.EmptyL -> Right paras
-            ParagraphSeq paraLines :< rest ->
-              let
-                paraText = (Text.intercalate " " . Foldable.toList) paraLines
-                startsWithSpace = (not . Text.null) paraText && (Char.isSpace . Text.head) paraText
-              in if startsWithSpace
-                then go (paras |> ParagraphFormatIndented paraLines) rest
-                else go (paras |> ParagraphFormatPlain paraText) rest
+            ParagraphSeq paraLines :< restParas ->
+              case Seq.viewl paraLines of
+                Seq.EmptyL -> Left EmptyParagraph
+                firstLine :< restLines ->
+                  let isLaterEdition = ((== "[later editions continued as follows") . Text.strip) firstLine
+                  in if isLaterEdition
+                    then
+                      case Seq.viewr restLines of
+                        Seq.EmptyR -> Left LaterEditionEmpty
+                        beforeLastLine :> lastLine ->
+                          case Text.stripSuffix "]" lastLine of
+                            Nothing -> Left $ LaterEditionMissingCloseBracket lastLine
+                            Just strippedLastLine -> go (paras |> ParagraphFormatLaterEdition (beforeLastLine |> strippedLastLine)) restParas
+                    else
+                      let startsWithSpace = (not . Text.null) firstLine && (Char.isSpace . Text.head) firstLine
+                      in if startsWithSpace
+                        then go (paras |> ParagraphFormatIndented paraLines) restParas
+                        else
+                          let spacedText = (Text.intercalate " " . Foldable.toList) paraLines
+                          in go (paras |> ParagraphFormatPlain spacedText) restParas
       else
         if starParaCount == 3
           then go (paras |> ParagraphFormatStarDivision) afterStars
