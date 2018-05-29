@@ -33,3 +33,5 @@ data ParagraphFormat
   | ParagraphFormatLaterEdition (Seq Text)
   | ParagraphFormatStarDivision
   deriving Show
+
+data EditionOption = EarlyEdition | LaterEdition
