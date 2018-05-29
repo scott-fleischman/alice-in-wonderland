@@ -21,19 +21,22 @@ run path = do
   let chapters = Alice.Structure.bodyChapters body
   putStrLn $ "\nChapter Count: " ++  (show . length) chapters
   mapM_ printChapter chapters
-  where
-  printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
-    putStrLn $ show number ++ ". " ++ show title
-    putStrLn ""
-    mapM_ printParagraphWords paragraphs
-    putStrLn "\n\n\n"
-  printParagraphWords para = do
-    let optionalText = Alice.Sentence.flattenParagraphFormat Alice.Structure.LaterEdition para
-    case optionalText of
-      Just text -> do
-        Data.Text.IO.putStrLn text
-        putStrLn ""
-      Nothing -> return ()
+
+printChapter :: Alice.Structure.Chapter -> IO ()
+printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
+  putStrLn $ show number ++ ". " ++ show title
+  putStrLn ""
+  mapM_ printParagraphFlat paragraphs
+  putStrLn "\n\n\n"
+
+printParagraphFlat :: Alice.Structure.ParagraphFormat -> IO ()
+printParagraphFlat para = do
+  let optionalText = Alice.Sentence.flattenParagraphFormat Alice.Structure.LaterEdition para
+  case optionalText of
+    Just text -> do
+      Data.Text.IO.putStrLn text
+      putStrLn ""
+    Nothing -> return ()
 
 printParagraphFormat :: Alice.Structure.ParagraphFormat -> IO ()
 printParagraphFormat (Alice.Structure.ParagraphFormatPlain text) = do
