@@ -2,6 +2,7 @@
 
 module Alice where
 
+import qualified Alice.Parse
 import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Data.Text
@@ -12,7 +13,7 @@ run path = do
   text <- Alice.TextFile.loadText path
   putStrLn $ "Text length = " ++ show (Data.Text.length text)
   body <-
-    case Alice.Structure.parseBody text of
+    case Alice.Parse.parseBody text of
       Left err -> error (show err)
       Right result -> return result
 
