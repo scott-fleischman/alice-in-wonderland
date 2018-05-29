@@ -2,6 +2,7 @@
 
 module Alice.Structure where
 
+-- import qualified Data.Maybe as Maybe
 import           Data.Sequence (Seq, ViewL((:<)), (<|), (|>), ViewR((:>)))
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
@@ -15,7 +16,13 @@ newtype ChapterNumber = ChapterNumber Int deriving Show
 newtype ChapterTitle = ChapterTitle Text deriving Show
 newtype ChapterContents = ChapterContents (Seq Text) deriving Show
 newtype TheEnd = TheEnd Text deriving Show
-newtype Paragraph = Paragraph (Seq Text) deriving Show
+newtype ParagraphSeq = ParagraphSeq (Seq Text) deriving Show
+newtype ParagraphText = ParagraphText Text deriving Show
+
+data Chunk
+  = ChunkParagraph ParagraphSeq
+  | ChunkStarDivision
+  deriving Show
 
 data Error
   = NoGutenbergStartFound
@@ -42,7 +49,7 @@ data Chapter = Chapter
   { chapterNumber :: ChapterNumber
   , chapterTitle :: ChapterTitle
   , chapterContents :: ChapterContents
-  , chapterParagraphs :: Seq Paragraph
+  , chapterParagraphs :: Seq ParagraphSeq
   } deriving Show
 
 parseBody :: Text -> Either Error Body
@@ -125,7 +132,7 @@ parseChapterFromLeft fullInput =
     line :< rest | matchesChapter line -> do
       (number, title) <- parseChapterHeading line
       let (ChapterContents contents, moreChapters) = buildContents (ChapterContents Seq.empty) rest
-      paragraphs <- parseParagraphs contents
+      paragraphs <- parseParagraphSeqs contents
       Right (Right (Chapter number title (ChapterContents contents) paragraphs, moreChapters))
     line :< _ -> Left $ InvalidChapterHeading line
   where
@@ -161,26 +168,44 @@ parseChapterHeading input = do
       Just title -> Right title
   Right (ChapterNumber number, ChapterTitle title)
 
-parseParagraphFromLeft :: Seq Text -> Either Error (Paragraph, Seq Text)
+parseParagraphFromLeft :: Seq Text -> Either Error (ParagraphSeq, Seq Text)
 parseParagraphFromLeft input =
   case Seq.viewl input of
     Seq.EmptyL -> Left EmptyParagraph
     line :< rest | Text.null line -> parseParagraphFromLeft rest
     line :< rest ->
-      let (Paragraph soFar, finalRest) = build (Paragraph Seq.empty) rest
-      in Right (Paragraph (line <| soFar), finalRest)
+      let (ParagraphSeq soFar, finalRest) = build (ParagraphSeq Seq.empty) rest
+      in Right (ParagraphSeq (line <| soFar), finalRest)
   where
-  build (Paragraph soFar) inputBuild =
+  build (ParagraphSeq soFar) inputBuild =
     case Seq.viewl inputBuild of
-      Seq.EmptyL -> (Paragraph soFar, Seq.empty)
-      line :< _ | Text.null line -> (Paragraph soFar, inputBuild)
-      line :< rest -> build (Paragraph (soFar |> line)) rest
+      Seq.EmptyL -> (ParagraphSeq soFar, Seq.empty)
+      line :< _ | Text.null line -> (ParagraphSeq soFar, inputBuild)
+      line :< rest -> build (ParagraphSeq (soFar |> line)) rest
 
-parseParagraphs :: Seq Text -> Either Error (Seq Paragraph)
-parseParagraphs = go Seq.empty
+parseParagraphSeqs :: Seq Text -> Either Error (Seq ParagraphSeq)
+parseParagraphSeqs = go Seq.empty
   where
   go paragraphs input =
     case parseParagraphFromLeft input of
       Left EmptyParagraph -> Right paragraphs
       Left err -> Left err
       Right (p, more) -> go (paragraphs |> p) more
+
+-- parseChunks :: Seq Paragraph -> Either Error (Seq Chunk)
+-- parseChunks = go Seq.empty
+--   where
+--   go chunks input =
+--     case Seq.viewl input of
+--       Seq.EmptyL -> Right Seq.empty
+--       (Paragraph paraLines) :< rest ->
+--         let
+--           paraText = (Text.concat . Seq.toList) paraLines
+--           hasStar = Maybe.isJust (Text.find (== '*') paraText)
+--   getStarLineCount numberSoFar input =
+--     case Seq.viewl input of
+--       Seq.EmptyL -> Right Seq.empty
+--       (Paragraph paraLines) :< rest ->
+--         let
+--           paraText = (Text.concat . Seq.toList) paraLines
+--           hasStar = Maybe.isJust (Text.find (== '*') paraText)

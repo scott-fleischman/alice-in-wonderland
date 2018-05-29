@@ -5,6 +5,7 @@ module Alice where
 import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Data.Text
+import qualified Data.Text.IO
 
 run :: FilePath -> IO ()
 run path = do
@@ -21,8 +22,12 @@ run path = do
   where
   printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
     putStrLn $ show number ++ ". " ++ show title
-    mapM_ print paragraphs
-    putStrLn "\n"
+    putStrLn ""
+    mapM_ printParagraphSeq paragraphs
+    putStrLn "\n\n\n"
+  printParagraphSeq (Alice.Structure.ParagraphSeq texts) = do
+    mapM_ Data.Text.IO.putStrLn texts
+    putStrLn ""
 
 main :: IO ()
 main = run Alice.TextFile.textFilePath
