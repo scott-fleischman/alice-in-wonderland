@@ -54,26 +54,46 @@ printChapter :: Alice.Structure.Chapter -> IO ()
 printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
   putStrLn $ show number ++ ". " ++ show title
   putStrLn ""
-  let chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
-  mapM_ printWord
+  let
+    chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
+    getSuffix = Alice.Structure.wordSuffix . Alice.Structure.wordContextWord
+    getWordLast = Alice.Structure.wordLast . Alice.Structure.wordContextWord
+  mapM_ printWordContextLn
     . filter
-      (\word
-        -> (Maybe.isJust . Text.find (\c -> elem c ['.','!','?']) . Alice.Structure.wordSuffix) word
-        && Alice.Structure.wordLast word == Alice.Structure.NotLastWordInParagraph
+      (\wordContext
+        -> (Maybe.isJust . Text.find (\c -> elem c ['.','!','?']) . getSuffix) wordContext
+        && getWordLast wordContext == Alice.Structure.NotLastWordInParagraph
       )
     . Foldable.toList
+    . Alice.Sentence.contextualizeWords (Alice.Structure.BeforeCount 3) (Alice.Structure.AfterCount 5)
     $ chapterWords
   putStrLn "\n\n\n"
 
+wordToText :: Alice.Structure.Word -> Text
+wordToText word = Text.concat
+  [ Alice.Structure.wordPrefix word
+  , Alice.Structure.wordText word
+  , Alice.Structure.wordSuffix word
+  ]
+
 printWord :: Alice.Structure.Word -> IO ()
-printWord word = do
-  Text.IO.putStr $ Alice.Structure.wordPrefix word
-  Text.IO.putStr " "
-  Text.IO.putStr $ Alice.Structure.wordText word
-  Text.IO.putStr " "
-  Text.IO.putStr $ Alice.Structure.wordSuffix word
-  Text.IO.putStr " "
-  print $ Alice.Structure.wordLast word
+printWord = Text.IO.putStr . wordToText
+
+printWordLn :: Alice.Structure.Word -> IO ()
+printWordLn word = do
+  printWord word
+  Text.IO.putStr "\n"
+
+printWordContextLn :: Alice.Structure.WordContext -> IO ()
+printWordContextLn (Alice.Structure.WordContext before word after) =
+  Text.IO.putStrLn $
+    Text.intercalate "   "
+      [ (Text.intercalate " " . fmap wordToText . Foldable.toList) before
+      , "   [[ "
+      , wordToText word
+      , " ]]   "
+      , (Text.intercalate " " . fmap wordToText . Foldable.toList) after
+      ]
 
 printPair :: Show a => (Text, a) -> IO ()
 printPair (t, a) = do

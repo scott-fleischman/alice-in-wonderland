@@ -2,6 +2,7 @@ module Alice.Structure where
 
 import           Data.Sequence (Seq)
 import           Data.Text (Text)
+import           Prelude hiding (Word)
 
 newtype GutenbergPreamble = GutenbergPreamble (Seq Text) deriving (Eq, Ord, Show)
 newtype GutenbergPostlude = GutenbergPostlude (Seq Text) deriving (Eq, Ord, Show)
@@ -11,6 +12,8 @@ newtype ChapterTitle = ChapterTitle Text deriving (Eq, Ord, Show)
 newtype ChapterContents = ChapterContents (Seq Text) deriving (Eq, Ord, Show)
 newtype TheEnd = TheEnd Text deriving (Eq, Ord, Show)
 newtype ParagraphSeq = ParagraphSeq (Seq Text) deriving (Eq, Ord, Show)
+newtype BeforeCount = BeforeCount Int deriving (Eq, Ord, Show)
+newtype AfterCount = AfterCount Int deriving (Eq, Ord, Show)
 
 data Body = Body
   { bodyPreamble :: GutenbergPreamble
@@ -42,4 +45,10 @@ data Word = Word
   , wordText :: Text
   , wordSuffix :: Text
   , wordLast :: LastWordInParagraph
+  } deriving (Eq, Ord, Show)
+
+data WordContext = WordContext
+  { wordContextBefore :: Seq Word
+  , wordContextWord :: Word
+  , wordContextAfter :: Seq Word
   } deriving (Eq, Ord, Show)

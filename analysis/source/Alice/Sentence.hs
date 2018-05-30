@@ -74,3 +74,30 @@ flattenParagraphFormat _ ParagraphFormatChorusMarker = Nothing
 
 flattenParagraphLines :: Seq Text -> Text
 flattenParagraphLines = Text.intercalate " " . fmap Text.strip . Foldable.toList
+
+contextualizeWords :: BeforeCount -> AfterCount -> Seq Word -> Seq WordContext
+contextualizeWords (BeforeCount beforeCount) (AfterCount afterCount) allItems = go Seq.empty (Seq.drop 1 allItems) allItems
+  where
+  go _ _ Seq.Empty = Seq.empty
+  go beforeItems afterItems (word :<| rest) =
+    let
+      trimmedBefore = reduceToSizeFromLeft beforeCount beforeItems
+      trimmedAfter = reduceToSizeFromRight afterCount afterItems
+    in WordContext
+      { wordContextBefore = trimmedBefore
+      , wordContextWord = word
+      , wordContextAfter = trimmedAfter
+      }
+      :<| go (trimmedBefore :|> word) (Seq.drop 1 rest) rest
+
+reduceToSizeFromLeft :: Int -> Seq a -> Seq a
+reduceToSizeFromLeft _ Seq.Empty = Seq.empty
+reduceToSizeFromLeft size items@(_ :<| rest)
+  | Seq.length items <= size = items
+  | otherwise = reduceToSizeFromLeft size rest
+
+reduceToSizeFromRight :: Int -> Seq a -> Seq a
+reduceToSizeFromRight _ Seq.Empty = Seq.empty
+reduceToSizeFromRight size items@(rest :|> _)
+  | Seq.length items <= size = items
+  | otherwise = reduceToSizeFromRight size rest
