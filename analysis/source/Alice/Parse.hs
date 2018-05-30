@@ -5,7 +5,7 @@ module Alice.Parse where
 import           Alice.Structure
 import qualified Data.Char as Char
 import qualified Data.Foldable as Foldable
-import           Data.Sequence (Seq((:<|), (:|>)), ViewL((:<)), (<|), (|>), ViewR((:>)))
+import           Data.Sequence (Seq((:<|), (:|>)), (<|), (|>))
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
@@ -158,40 +158,36 @@ parseParagraphFormats :: Seq ParagraphSeq -> Either Error (Seq ParagraphFormat)
 parseParagraphFormats = go Seq.empty
   where
   go paras Seq.Empty = Right paras
-  go paras input@(ParagraphSeq paraLines :<| restParas) =
-    let (starParaCount, afterStars) = getStarParaCount 0 input
-    in if starParaCount == 0
-      then
-        case Seq.viewl paraLines of
-          Seq.EmptyL -> Left EmptyParagraph
-          firstLine :< restLines ->
-            let isLaterEdition = ((== "[later editions continued as follows") . Text.strip) firstLine
-            in if isLaterEdition
-              then
-                case Seq.viewr restLines of
-                  Seq.EmptyR -> Left LaterEditionEmpty
-                  beforeLastLine :> lastLine ->
-                    case Text.stripSuffix "]" lastLine of
-                      Nothing -> Left $ LaterEditionMissingCloseBracket lastLine
-                      Just strippedLastLine -> go (paras |> ParagraphFormatLaterEdition (beforeLastLine |> strippedLastLine)) restParas
-              else
-                let startsWithSpace = (not . Text.null) firstLine && (Char.isSpace . Text.head) firstLine
-                in case startsWithSpace of
-                  True | ((== "CHORUS.") . Text.strip . Text.intercalate " " . Foldable.toList) paraLines ->
-                    go (paras |> ParagraphFormatChorusMarker) restParas
-                  True ->  go (paras |> ParagraphFormatIndented paraLines) restParas
-                  False ->
-                    let spacedText = (Text.intercalate " " . Foldable.toList) paraLines
-                    in go (paras |> ParagraphFormatPlain spacedText) restParas
-      else
-        if starParaCount == 3
-          then go (paras |> ParagraphFormatStarDivision) afterStars
-          else Left $ InvalidStarParagraphCount starParaCount
+  go paras input@(_ :<| _)
+    | (starParaCount, afterStars) <- getStarParaCount input, starParaCount > 0
+    = if starParaCount == 3
+        then go (paras |> ParagraphFormatStarDivision) afterStars
+        else Left $ InvalidStarParagraphCount starParaCount
+  go _ (ParagraphSeq Seq.Empty :<| _) = Left EmptyParagraph
+  go paras (ParagraphSeq (firstLine :<| restLines) :<| restParas)
+    | ((== "[later editions continued as follows") . Text.strip) firstLine
+    = case restLines of
+        Seq.Empty -> Left LaterEditionEmpty
+        beforeLastLine :|> lastLine ->
+          case Text.stripSuffix "]" lastLine of
+            Nothing -> Left $ LaterEditionMissingCloseBracket lastLine
+            Just strippedLastLine -> go (paras |> ParagraphFormatLaterEdition (beforeLastLine |> strippedLastLine)) restParas
+  go paras (ParagraphSeq paraLines@(firstLine :<| _) :<| restParas) =
+    let startsWithSpace = (not . Text.null) firstLine && (Char.isSpace . Text.head) firstLine
+    in case startsWithSpace of
+      True | ((== "CHORUS.") . Text.strip . Text.intercalate " " . Foldable.toList) paraLines ->
+        go (paras |> ParagraphFormatChorusMarker) restParas
+      True -> go (paras |> ParagraphFormatIndented paraLines) restParas
+      False ->
+        let spacedText = (Text.intercalate " " . Foldable.toList) paraLines
+        in go (paras |> ParagraphFormatPlain spacedText) restParas
 
-getStarParaCount :: Int -> Seq ParagraphSeq -> (Int, Seq ParagraphSeq)
-getStarParaCount numberSoFar Seq.Empty = (numberSoFar, Seq.empty)
-getStarParaCount numberSoFar (ParagraphSeq paraLines :<| rest) =
-  let paraText = (Text.concat . Foldable.toList) paraLines
-  in if Text.all (\c -> Char.isSpace c || c == '*') paraText
-    then getStarParaCount (numberSoFar + 1) rest
-    else (numberSoFar, rest)
+getStarParaCount :: Seq ParagraphSeq -> (Int, Seq ParagraphSeq)
+getStarParaCount = go 0
+  where
+  go numberSoFar Seq.Empty = (numberSoFar, Seq.empty)
+  go numberSoFar (ParagraphSeq paraLines :<| rest) =
+    let paraText = (Text.concat . Foldable.toList) paraLines
+    in if Text.all (\c -> Char.isSpace c || c == '*') paraText
+      then go (numberSoFar + 1) rest
+      else (numberSoFar, rest)
