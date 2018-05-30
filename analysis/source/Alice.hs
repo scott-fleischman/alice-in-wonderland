@@ -9,6 +9,9 @@ import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Data.Char as Char
 import qualified Data.Foldable as Foldable
+import qualified Data.Maybe as Maybe
+import           Data.Sequence (Seq)
+import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
 import           Data.Text (Text)
 import qualified Data.Text as Text
@@ -27,12 +30,37 @@ run path = do
   putStrLn $ "\nChapter Count: " ++  (show . length) chapters
   mapM_ printChapter chapters
 
+printSuffixSet :: Alice.Structure.Body -> IO ()
+printSuffixSet body = do
+  let
+    chapters = Alice.Structure.bodyChapters body
+    allWords :: Seq Alice.Structure.Word
+    allWords
+      = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition
+      $ Foldable.foldMap Alice.Structure.chapterParagraphs chapters
+    suffixSet
+      = Set.fromList
+      . fmap Alice.Structure.wordSuffix
+      . filter
+        (\x
+          -> (not . Text.null . Alice.Structure.wordSuffix) x
+          && Alice.Structure.wordLast x == Alice.Structure.NotLastWordInParagraph
+        )
+      . Foldable.toList
+      $ allWords
+  mapM_ Text.IO.putStrLn suffixSet
+
 printChapter :: Alice.Structure.Chapter -> IO ()
 printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
   putStrLn $ show number ++ ". " ++ show title
   putStrLn ""
   let chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
   mapM_ printWord
+    . filter
+      (\word
+        -> (Maybe.isJust . Text.find (\c -> elem c ['.','!','?']) . Alice.Structure.wordSuffix) word
+        && Alice.Structure.wordLast word == Alice.Structure.NotLastWordInParagraph
+      )
     . Foldable.toList
     $ chapterWords
   putStrLn "\n\n\n"
