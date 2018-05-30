@@ -23,30 +23,24 @@ buildWord :: Text -> [Word]
 buildWord input =
   let
     (prefix, afterPrefix) = stripPunctuationPrefix input
-    (text, suffix) = stripPunctuationSuffix afterPrefix
     emdash = "--"
-    (beforeEmdash, emdashAndAfter) = Text.breakOn emdash text
+    (beforeEmdash, emdashAndAfter) = Text.breakOn emdash afterPrefix
+    (text, suffixBeforeEmdash) = stripPunctuationSuffix beforeEmdash
   in case Text.stripPrefix emdash emdashAndAfter of
     Nothing ->
       [ Word
         { wordPrefix = prefix
         , wordText = text
-        , wordSuffix = suffix
+        , wordSuffix = suffixBeforeEmdash
         }
       ]
-    Just text2WithPrefix ->
-      let (prefix2, text2) = stripPunctuationPrefix text2WithPrefix
-      in [ Word
+    Just afterEmdash ->
+      Word
         { wordPrefix = prefix
-        , wordText = beforeEmdash
-        , wordSuffix = emdash
+        , wordText = text
+        , wordSuffix = Text.concat [suffixBeforeEmdash, emdash]
         }
-      , Word
-        { wordPrefix = prefix2
-        , wordText = text2
-        , wordSuffix = suffix
-        }
-      ]
+      : buildWord afterEmdash
 
 stripPunctuationPrefix :: Text -> (Text, Text)
 stripPunctuationPrefix = Text.break Char.isLetter
