@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -Wno-unused-imports #-}
 
 module Alice where
 
@@ -8,7 +9,7 @@ import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Data.Char as Char
 import qualified Data.Foldable as Foldable
-import qualified Data.HashSet as HashSet
+import qualified Data.Set as Set
 import           Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.IO as Text.IO
@@ -31,9 +32,26 @@ printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
   putStrLn $ show number ++ ". " ++ show title
   putStrLn ""
   let chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
-  mapM_ Text.IO.putStrLn . HashSet.fromList . Foldable.toList . fmap Alice.Structure.wordSuffix $ chapterWords
-  -- mapM_ printIfContainsNonLetter $ fmap Alice.Structure.wordText $ chapterWords
+  mapM_ printWord
+    . Foldable.toList
+    $ chapterWords
   putStrLn "\n\n\n"
+
+printWord :: Alice.Structure.Word -> IO ()
+printWord word = do
+  Text.IO.putStr $ Alice.Structure.wordPrefix word
+  Text.IO.putStr " "
+  Text.IO.putStr $ Alice.Structure.wordText word
+  Text.IO.putStr " "
+  Text.IO.putStr $ Alice.Structure.wordSuffix word
+  Text.IO.putStr " "
+  print $ Alice.Structure.wordLast word
+
+printPair :: Show a => (Text, a) -> IO ()
+printPair (t, a) = do
+  Text.IO.putStr t
+  putStr "\t"
+  print a
 
 printIfContainsNonLetter :: Text -> IO ()
 printIfContainsNonLetter input =

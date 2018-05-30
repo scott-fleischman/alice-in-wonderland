@@ -5,7 +5,7 @@ module Alice.Sentence where
 import           Alice.Structure
 import qualified Data.Char as Char
 import qualified Data.Foldable as Foldable
-import           Data.Sequence (Seq, (<|))
+import           Data.Sequence (Seq((:<|), (:|>)))
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
@@ -15,12 +15,18 @@ allParagraphWords :: EditionOption -> Seq ParagraphFormat -> Seq Word
 allParagraphWords editionOption = Foldable.foldMap (paragraphWords editionOption)
 
 paragraphWords :: EditionOption -> ParagraphFormat -> Seq Word
-paragraphWords editionOption = textWords . maybe "" id . flattenParagraphFormat editionOption
+paragraphWords editionOption paragraphs =
+  let
+    initialResult = textWords . maybe "" id . flattenParagraphFormat editionOption $ paragraphs
+  in case initialResult of
+    Seq.Empty -> Seq.empty
+    rest :|> lastWord -> rest :|> lastWord { wordLast = IsLastWordInParagraph }
 
 textWords :: Text -> Seq Word
 textWords = Foldable.foldMap buildWord . Seq.fromList . Text.words
 
 buildWord :: Text -> Seq Word
+buildWord input | Text.null input = Seq.empty
 buildWord input =
   let
     (prefix, afterPrefix) = stripPunctuationPrefix input
@@ -33,6 +39,7 @@ buildWord input =
         { wordPrefix = prefix
         , wordText = text
         , wordSuffix = suffixBeforeEmdash
+        , wordLast = NotLastWordInParagraph
         }
 
     Just afterEmdash ->
@@ -40,8 +47,9 @@ buildWord input =
         { wordPrefix = prefix
         , wordText = text
         , wordSuffix = Text.concat [suffixBeforeEmdash, emdash]
+        , wordLast = NotLastWordInParagraph
         }
-      <| buildWord afterEmdash
+      :<| buildWord afterEmdash
 
 stripPunctuationPrefix :: Text -> (Text, Text)
 stripPunctuationPrefix = Text.break Char.isLetter
