@@ -7,6 +7,7 @@ import qualified Alice.Sentence
 import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Data.Char as Char
+import qualified Data.Foldable as Foldable
 import qualified Data.HashSet as HashSet
 import           Data.Text (Text)
 import qualified Data.Text as Text
@@ -30,7 +31,7 @@ printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
   putStrLn $ show number ++ ". " ++ show title
   putStrLn ""
   let chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
-  print . HashSet.fromList . fmap (HashSet.fromList . Text.unpack . Text.filter (not . Char.isLetter)) . fmap Alice.Structure.wordText $ chapterWords
+  mapM_ Text.IO.putStrLn . HashSet.fromList . Foldable.toList . fmap Alice.Structure.wordSuffix $ chapterWords
   -- mapM_ printIfContainsNonLetter $ fmap Alice.Structure.wordText $ chapterWords
   putStrLn "\n\n\n"
 

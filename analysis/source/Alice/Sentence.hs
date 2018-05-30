@@ -5,21 +5,22 @@ module Alice.Sentence where
 import           Alice.Structure
 import qualified Data.Char as Char
 import qualified Data.Foldable as Foldable
-import           Data.Sequence (Seq)
+import           Data.Sequence (Seq, (<|))
+import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
 import           Prelude hiding (Word)
 
-allParagraphWords :: EditionOption -> Seq ParagraphFormat -> [Word]
-allParagraphWords editionOption = concatMap (paragraphWords editionOption)
+allParagraphWords :: EditionOption -> Seq ParagraphFormat -> Seq Word
+allParagraphWords editionOption = Foldable.foldMap (paragraphWords editionOption)
 
-paragraphWords :: EditionOption -> ParagraphFormat -> [Word]
+paragraphWords :: EditionOption -> ParagraphFormat -> Seq Word
 paragraphWords editionOption = textWords . maybe "" id . flattenParagraphFormat editionOption
 
-textWords :: Text -> [Word]
-textWords = concatMap buildWord . Text.words
+textWords :: Text -> Seq Word
+textWords = Foldable.foldMap buildWord . Seq.fromList . Text.words
 
-buildWord :: Text -> [Word]
+buildWord :: Text -> Seq Word
 buildWord input =
   let
     (prefix, afterPrefix) = stripPunctuationPrefix input
@@ -28,19 +29,19 @@ buildWord input =
     (text, suffixBeforeEmdash) = stripPunctuationSuffix beforeEmdash
   in case Text.stripPrefix emdash emdashAndAfter of
     Nothing ->
-      [ Word
+      Seq.singleton $ Word
         { wordPrefix = prefix
         , wordText = text
         , wordSuffix = suffixBeforeEmdash
         }
-      ]
+
     Just afterEmdash ->
       Word
         { wordPrefix = prefix
         , wordText = text
         , wordSuffix = Text.concat [suffixBeforeEmdash, emdash]
         }
-      : buildWord afterEmdash
+      <| buildWord afterEmdash
 
 stripPunctuationPrefix :: Text -> (Text, Text)
 stripPunctuationPrefix = Text.break Char.isLetter
