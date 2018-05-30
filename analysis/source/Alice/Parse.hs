@@ -172,15 +172,15 @@ parseParagraphFormats = go Seq.empty
           case Text.stripSuffix "]" lastLine of
             Nothing -> Left $ LaterEditionMissingCloseBracket lastLine
             Just strippedLastLine -> go (paras |> ParagraphFormatLaterEdition (beforeLastLine |> strippedLastLine)) restParas
-  go paras (ParagraphSeq paraLines@(firstLine :<| _) :<| restParas) =
-    let startsWithSpace = (not . Text.null) firstLine && (Char.isSpace . Text.head) firstLine
-    in case startsWithSpace of
-      True | ((== "CHORUS.") . Text.strip . Text.intercalate " " . Foldable.toList) paraLines ->
-        go (paras |> ParagraphFormatChorusMarker) restParas
-      True -> go (paras |> ParagraphFormatIndented paraLines) restParas
-      False ->
-        let spacedText = (Text.intercalate " " . Foldable.toList) paraLines
-        in go (paras |> ParagraphFormatPlain spacedText) restParas
+  go paras (ParagraphSeq paraLines@(firstLine :<| _) :<| restParas)
+    | (not . Text.null) firstLine
+    , (Char.isSpace . Text.head) firstLine
+    = if ((== "CHORUS.") . Text.strip . Text.intercalate " " . Foldable.toList) paraLines
+      then go (paras |> ParagraphFormatChorusMarker) restParas
+      else go (paras |> ParagraphFormatIndented paraLines) restParas
+  go paras (ParagraphSeq paraLines :<| restParas) =
+    let spacedText = (Text.intercalate " " . Foldable.toList) paraLines
+    in go (paras |> ParagraphFormatPlain spacedText) restParas
 
 getStarParaCount :: Seq ParagraphSeq -> (Int, Seq ParagraphSeq)
 getStarParaCount = go 0
