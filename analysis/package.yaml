@@ -9,6 +9,7 @@ dependencies:
 - pdf-toolbox-document
 - roman-numerals
 - text
+- unordered-containers
 ghc-options:
 - -Wall
 - -Werror
