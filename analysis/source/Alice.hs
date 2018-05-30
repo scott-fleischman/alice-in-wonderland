@@ -26,7 +26,8 @@ printChapter :: Alice.Structure.Chapter -> IO ()
 printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
   putStrLn $ show number ++ ". " ++ show title
   putStrLn ""
-  mapM_ printParagraphFormat paragraphs
+  let chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
+  mapM_ Data.Text.IO.putStrLn $ fmap Alice.Structure.wordText chapterWords
   putStrLn "\n\n\n"
 
 printParagraphFlat :: Alice.Structure.ParagraphFormat -> IO ()

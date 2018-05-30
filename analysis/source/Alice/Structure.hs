@@ -36,4 +36,9 @@ data ParagraphFormat
   deriving Show
 
 data EditionOption = EarlyEdition | LaterEdition
-data WordInParagraph = NotLastWordInParagraph | IsLastWordInParagraph
+data LastWordInParagraph = NotLastWordInParagraph | IsLastWordInParagraph
+data Word = Word
+  { wordPrefix :: Text
+  , wordText :: Text
+  , wordSuffix :: Text
+  }
