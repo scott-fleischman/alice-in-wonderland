@@ -3,14 +3,14 @@ module Alice.Structure where
 import           Data.Sequence (Seq)
 import           Data.Text (Text)
 
-newtype GutenbergPreamble = GutenbergPreamble (Seq Text) deriving Show
-newtype GutenbergPostlude = GutenbergPostlude (Seq Text) deriving Show
-newtype BookTitle = BookTitle (Seq Text) deriving Show
-newtype ChapterNumber = ChapterNumber Int deriving Show
-newtype ChapterTitle = ChapterTitle Text deriving Show
-newtype ChapterContents = ChapterContents (Seq Text) deriving Show
-newtype TheEnd = TheEnd Text deriving Show
-newtype ParagraphSeq = ParagraphSeq (Seq Text) deriving Show
+newtype GutenbergPreamble = GutenbergPreamble (Seq Text) deriving (Eq, Show)
+newtype GutenbergPostlude = GutenbergPostlude (Seq Text) deriving (Eq, Show)
+newtype BookTitle = BookTitle (Seq Text) deriving (Eq, Show)
+newtype ChapterNumber = ChapterNumber Int deriving (Eq, Show)
+newtype ChapterTitle = ChapterTitle Text deriving (Eq, Show)
+newtype ChapterContents = ChapterContents (Seq Text) deriving (Eq, Show)
+newtype TheEnd = TheEnd Text deriving (Eq, Show)
+newtype ParagraphSeq = ParagraphSeq (Seq Text) deriving (Eq, Show)
 
 data Body = Body
   { bodyPreamble :: GutenbergPreamble
@@ -18,14 +18,14 @@ data Body = Body
   , bodyChapters :: Seq Chapter
   , bodyTheEnd :: TheEnd
   , bodyPostlude :: GutenbergPostlude
-  } deriving Show
+  } deriving (Eq, Show)
 
 data Chapter = Chapter
   { chapterNumber :: ChapterNumber
   , chapterTitle :: ChapterTitle
   , chapterContents :: ChapterContents
   , chapterParagraphs :: Seq ParagraphFormat
-  } deriving Show
+  } deriving (Eq, Show)
 
 data ParagraphFormat
   = ParagraphFormatPlain Text
@@ -33,12 +33,12 @@ data ParagraphFormat
   | ParagraphFormatLaterEdition (Seq Text)
   | ParagraphFormatChorusMarker
   | ParagraphFormatStarDivision
-  deriving Show
+  deriving (Eq, Show)
 
-data EditionOption = EarlyEdition | LaterEdition
-data LastWordInParagraph = NotLastWordInParagraph | IsLastWordInParagraph
+data EditionOption = EarlyEdition | LaterEdition deriving (Eq, Show)
+data LastWordInParagraph = NotLastWordInParagraph | IsLastWordInParagraph deriving (Eq, Show)
 data Word = Word
   { wordPrefix :: Text
   , wordText :: Text
   , wordSuffix :: Text
-  }
+  } deriving (Eq, Show)
