@@ -3,19 +3,34 @@
 module Alice.Render where
 
 import qualified Alice.Structure
+import qualified Data.Char as Char
 import           Data.Sequence (Seq((:<|)))
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
 
 renderAllWords :: Seq Alice.Structure.Word -> Text
-renderAllWords Seq.Empty = Text.empty
-renderAllWords (word :<| Seq.Empty) = renderWord word
-renderAllWords (word1 :<| word2 :<| rest)
-  | hasIndent word2 = Text.concat [renderWord word1, "\n", renderAllWords (word2 :<| rest)]
+renderAllWords = normalizeIndent . renderAllWordsUnnormalizedIndent
+
+normalizeIndent :: Text -> Text
+normalizeIndent input | Text.null input = input
+normalizeIndent input =
+  let
+    inputLines = Text.lines input
+    indent = Text.length . Text.takeWhile Char.isSpace
+    minimumIndent = minimum $ fmap indent inputLines
+  in if minimumIndent <= 0
+    then input
+    else Text.intercalate "\n" $ fmap (Text.drop minimumIndent) inputLines
+
+renderAllWordsUnnormalizedIndent :: Seq Alice.Structure.Word -> Text
+renderAllWordsUnnormalizedIndent Seq.Empty = Text.empty
+renderAllWordsUnnormalizedIndent (word :<| Seq.Empty) = renderWord word
+renderAllWordsUnnormalizedIndent (word1 :<| word2 :<| rest)
+  | hasIndent word2 = Text.concat [renderWord word1, "\n", renderAllWordsUnnormalizedIndent (word2 :<| rest)]
   | renderedWord1 <- renderWord word1
-  , isEmdashSuffix renderedWord1 = Text.append renderedWord1 $ renderAllWords (word2 :<| rest)
-  | otherwise = Text.concat [renderWord word1, " ", renderAllWords (word2 :<| rest)]
+  , isEmdashSuffix renderedWord1 = Text.append renderedWord1 $ renderAllWordsUnnormalizedIndent (word2 :<| rest)
+  | otherwise = Text.concat [renderWord word1, " ", renderAllWordsUnnormalizedIndent (word2 :<| rest)]
 
 hasIndent :: Alice.Structure.Word -> Bool
 hasIndent = (> 0) . getIndentValue
