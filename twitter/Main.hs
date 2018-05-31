@@ -2,6 +2,7 @@
 {-# LANGUAGE TypeApplications #-}
 
 import qualified Alice.Tweets
+import qualified Control.Lens as Lens
 import qualified Control.Logging as Logging
 import qualified Data.Aeson as Aeson
 import qualified Data.ByteString.Char8 as ByteString.Char8
@@ -13,6 +14,8 @@ import qualified InlineTweets
 import qualified System.Environment as Environment
 import qualified System.Random.Shuffle as Random.Shuffle
 import qualified Web.Twitter.Conduit as Twitter.Conduit
+import qualified Web.Twitter.Conduit.Parameters as Twitter.Conduit.Parameters
+import qualified Web.Twitter.Types as Twitter.Types
 
 main :: IO ()
 main = Logging.withStdoutLogging $ do
@@ -28,15 +31,23 @@ main = Logging.withStdoutLogging $ do
   mapM_ (postThread manager) $ take 1 randomTweets
 
 postThread :: Twitter.Conduit.Manager -> Alice.Tweets.TweetThread -> IO ()
-postThread _ (Alice.Tweets.TweetThread []) = return ()
-postThread manager (Alice.Tweets.TweetThread (firstTweet : _)) = postStatus manager firstTweet
+postThread manager (Alice.Tweets.TweetThread tweets) = go Nothing tweets
+  where
+  go _ [] = return ()
+  go parent (tweet : rest) = do
+    status <- postStatus manager parent tweet
+    let statusId = Twitter.Types.statusId status
+    go (Just statusId) rest
 
-postStatus :: Twitter.Conduit.Manager -> Text -> IO ()
-postStatus manager status = do
+postStatus :: Twitter.Conduit.Manager -> Maybe Twitter.Types.StatusId -> Text -> IO Twitter.Types.Status
+postStatus manager parent status = do
   Logging.log $ "Post: " <> status
   twInfo <- getTWInfoFromEnv
-  response <- Twitter.Conduit.call twInfo manager $ Twitter.Conduit.update status
-  print response
+  let
+    baseStatus = Twitter.Conduit.update status
+    statusWithParent = Lens.set Twitter.Conduit.Parameters.inReplyToStatusId parent baseStatus
+  response <- Twitter.Conduit.call twInfo manager statusWithParent
+  return response
 
 getTWInfoFromEnv :: IO Twitter.Conduit.TWInfo
 getTWInfoFromEnv = do

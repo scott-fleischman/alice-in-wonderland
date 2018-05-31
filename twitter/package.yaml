@@ -7,10 +7,12 @@ dependencies:
 - base
 - bytestring
 - interpolate
+- lens
 - logging
 - random-shuffle
 - text
 - twitter-conduit
+- twitter-types
 
 ghc-options:
 - -Wall
