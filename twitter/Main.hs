@@ -2,11 +2,14 @@
 {-# LANGUAGE TypeApplications #-}
 
 import qualified Alice.Tweets
+import qualified Control.Concurrent.Async.Timer as Async.Timer
 import qualified Control.Exception as Exception
 import qualified Control.Lens as Lens
 import qualified Control.Logging as Logging
+import qualified Control.Monad as Monad
 import qualified Data.Aeson as Aeson
 import qualified Data.ByteString.Char8 as ByteString.Char8
+import qualified Data.Maybe as Maybe
 import           Data.Semigroup ((<>))
 import           Data.Text (Text)
 import qualified Data.Text as Text
@@ -14,12 +17,19 @@ import qualified Data.Text.Encoding as Text.Encoding
 import qualified InlineTweets
 import qualified System.Environment as Environment
 import qualified System.Random.Shuffle as Random.Shuffle
+import qualified Text.Read
 import qualified Web.Twitter.Conduit as Twitter.Conduit
 import qualified Web.Twitter.Conduit.Parameters as Twitter.Conduit.Parameters
 import qualified Web.Twitter.Types as Twitter.Types
 
 main :: IO ()
 main = Logging.withStdoutLogging $ do
+  tweetIntervalEnv <- Environment.lookupEnv "TWEET_INTERVAL"
+  let
+    defaultTweetInterval = 30 * 60 * 1000 -- 30 minutes
+    tweetInterval = Maybe.fromMaybe defaultTweetInterval (tweetIntervalEnv >>= Text.Read.readMaybe @Int)
+  Logging.log $ "Timer interval: " <> (Text.pack . show) tweetInterval
+
   let
     inlineTweets = InlineTweets.inlineTweets
     tweetBytes = Text.Encoding.encodeUtf8 . Text.pack $ inlineTweets
@@ -27,9 +37,15 @@ main = Logging.withStdoutLogging $ do
     case Aeson.eitherDecodeStrict @Alice.Tweets.TweetList tweetBytes of
       Left err -> error err
       Right result -> return result
-  randomTweets <- Random.Shuffle.shuffleM tweetThreads
   manager <- Twitter.Conduit.newManager Twitter.Conduit.tlsManagerSettings
-  mapM_ (tryPostThread manager) $ take 1 randomTweets
+
+  let timerConf = Async.Timer.timerConfSetInterval tweetInterval Async.Timer.defaultTimerConf
+  Async.Timer.withAsyncTimer timerConf $ \timer ->
+    Monad.forever $ do
+      randomTweets <- Random.Shuffle.shuffleM tweetThreads
+      Monad.forM_ randomTweets $ \thread -> do
+        Async.Timer.timerWait timer
+        tryPostThread manager thread
 
 tryPostThread :: Twitter.Conduit.Manager -> Alice.Tweets.TweetThread -> IO ()
 tryPostThread manager thread = do

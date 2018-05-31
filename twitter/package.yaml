@@ -4,6 +4,7 @@ version: 0.1.0
 dependencies:
 - aeson
 - alice-analysis
+- async-timer
 - base
 - bytestring
 - interpolate
