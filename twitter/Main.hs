@@ -13,11 +13,10 @@ import qualified Data.Maybe as Maybe
 import           Data.Semigroup ((<>))
 import           Data.Text (Text)
 import qualified Data.Text as Text
-import qualified Data.Text.Encoding as Text.Encoding
-import qualified InlineTweets
 import qualified System.Environment as Environment
 import qualified System.Random.Shuffle as Random.Shuffle
 import qualified Text.Read
+import qualified TweetsData
 import qualified Web.Twitter.Conduit as Twitter.Conduit
 import qualified Web.Twitter.Conduit.Parameters as Twitter.Conduit.Parameters
 import qualified Web.Twitter.Types as Twitter.Types
@@ -30,11 +29,8 @@ main = Logging.withStdoutLogging $ do
     tweetInterval = Maybe.fromMaybe defaultTweetInterval (tweetIntervalEnv >>= Text.Read.readMaybe @Int)
   Logging.log $ "Timer interval: " <> (Text.pack . show) tweetInterval
 
-  let
-    inlineTweets = InlineTweets.inlineTweets
-    tweetBytes = Text.Encoding.encodeUtf8 . Text.pack $ inlineTweets
   Alice.Tweets.TweetList tweetThreads <-
-    case Aeson.eitherDecodeStrict @Alice.Tweets.TweetList tweetBytes of
+    case Aeson.eitherDecodeStrict @Alice.Tweets.TweetList TweetsData.tweetsBytes of
       Left err -> error err
       Right result -> return result
   manager <- Twitter.Conduit.newManager Twitter.Conduit.tlsManagerSettings

@@ -7,7 +7,7 @@ dependencies:
 - async-timer
 - base
 - bytestring
-- interpolate
+- file-embed
 - lens
 - logging
 - random-shuffle
