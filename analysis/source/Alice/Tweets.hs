@@ -13,11 +13,13 @@ import           Data.Text (Text)
 import           GHC.Generics (Generic)
 import           Prelude hiding (words)
 
-data TweetList = TweetList { tweets :: [TweetThread] } deriving (Generic)
+data TweetList = TweetList { tweets :: [TweetThread] } deriving (Show, Generic)
 instance Aeson.ToJSON TweetList
+instance Aeson.FromJSON TweetList
 
-data TweetThread = TweetThread { thread :: [Text] } deriving (Generic)
+data TweetThread = TweetThread { thread :: [Text] } deriving (Show, Generic)
 instance Aeson.ToJSON TweetThread
+instance Aeson.FromJSON TweetThread
 
 createTweetsFile :: FilePath -> IO ()
 createTweetsFile outputPath = do

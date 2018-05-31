@@ -1,0 +1,16 @@
+name: alice-twitter
+version: 0.1.0
+
+dependencies:
+- aeson
+- alice-analysis
+- base
+- random-shuffle
+- twitter-conduit
+
+ghc-options:
+- -Wall
+- -Werror
+
+executable:
+  main: Main.hs
