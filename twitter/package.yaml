@@ -5,7 +5,11 @@ dependencies:
 - aeson
 - alice-analysis
 - base
+- bytestring
+- interpolate
+- logging
 - random-shuffle
+- text
 - twitter-conduit
 
 ghc-options:
@@ -13,4 +17,5 @@ ghc-options:
 - -Werror
 
 executable:
+  source-dirs: .
   main: Main.hs
