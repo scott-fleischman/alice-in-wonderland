@@ -61,7 +61,7 @@ printChapterSentences (Alice.Structure.Chapter number (Alice.Structure.ChapterTi
   let
     chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
     sentences = Alice.Sentence.parseAllSentences chapterWords
-  mapM_ (\(Alice.Structure.Sentence words) -> Text.IO.putStrLn . Text.append "\n" . Alice.Render.concatTextWords . fmap Alice.Render.wordToText $ words) sentences
+  mapM_ (\(Alice.Structure.Sentence words) -> Text.IO.putStrLn . Text.append "\n" . Alice.Render.renderWords $ words) sentences
   putStrLn "\n\n\n"
 
 printChapter :: Alice.Structure.Chapter -> IO ()
@@ -84,7 +84,7 @@ printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
   putStrLn "\n\n\n"
 
 printWord :: Alice.Structure.Word -> IO ()
-printWord = Text.IO.putStr . Alice.Render.wordToText
+printWord = Text.IO.putStr . Alice.Render.renderWord
 
 printWordLn :: Alice.Structure.Word -> IO ()
 printWordLn word = do
@@ -95,11 +95,11 @@ printWordContextLn :: Alice.Structure.WordContext -> IO ()
 printWordContextLn (Alice.Structure.WordContext before word after) =
   Text.IO.putStrLn $
     Text.intercalate "   "
-      [ (Alice.Render.concatTextWords . fmap Alice.Render.wordToText) before
+      [ Alice.Render.renderWords before
       , "   [[ "
-      , Alice.Render.wordToText word
+      , Alice.Render.renderWord word
       , " ]]   "
-      , (Alice.Render.concatTextWords . fmap Alice.Render.wordToText) after
+      , Alice.Render.renderWords after
       ]
 
 printPair :: Show a => (Text, a) -> IO ()

@@ -53,15 +53,29 @@ allParagraphWords :: EditionOption -> Seq ParagraphFormat -> Seq Word
 allParagraphWords editionOption = Foldable.foldMap (paragraphWords editionOption)
 
 paragraphWords :: EditionOption -> ParagraphFormat -> Seq Word
-paragraphWords editionOption paragraphs =
-  let
-    initialResult = textWords . maybe "" id . flattenParagraphFormat editionOption $ paragraphs
-  in case initialResult of
-    Seq.Empty -> Seq.empty
-    rest :|> lastWord -> rest :|> lastWord { wordLast = IsLastWordInParagraph }
+paragraphWords _ (ParagraphFormatPlain text) = (setLastWordInParagraph . textWords) text
+paragraphWords _ (ParagraphFormatIndented paraLines) = (setLastWordInParagraph . Foldable.foldMap textWords) paraLines
+paragraphWords editionOption (ParagraphFormatLaterEdition paraLines) =
+  case editionOption of
+    EarlyEdition -> Seq.empty
+    LaterEdition -> (setLastWordInParagraph . Foldable.foldMap textWords) paraLines
+paragraphWords _ ParagraphFormatStarDivision = Seq.empty
+paragraphWords _ ParagraphFormatChorusMarker = Seq.empty
+
+setLastWordInParagraph :: Seq Word -> Seq Word
+setLastWordInParagraph Seq.Empty = Seq.empty
+setLastWordInParagraph (rest :|> lastWord) = rest :|> lastWord { wordLast = IsLastWordInParagraph }
 
 textWords :: Text -> Seq Word
-textWords = Foldable.foldMap buildWord . Seq.fromList . Text.words
+textWords text =
+  let
+    initialSpaces = Text.takeWhile Char.isSpace text
+    firstIndent = Indent (Text.length initialSpaces)
+    strippedText = Text.stripStart text
+    initialWords = Foldable.foldMap buildWord . Seq.fromList . Text.words $ strippedText
+  in case initialWords of
+    Seq.Empty -> Seq.empty
+    firstWord :<| rest -> firstWord { wordIndent = firstIndent } :<| rest
 
 buildWord :: Text -> Seq Word
 buildWord input | Text.null input = Seq.empty
@@ -74,7 +88,8 @@ buildWord input =
   in case Text.stripPrefix emdash emdashAndAfter of
     Nothing ->
       Seq.singleton $ Word
-        { wordPrefix = prefix
+        { wordIndent = Indent 0
+        , wordPrefix = prefix
         , wordText = text
         , wordSuffix = suffixBeforeEmdash
         , wordLast = NotLastWordInParagraph
@@ -82,7 +97,8 @@ buildWord input =
 
     Just afterEmdash ->
       Word
-        { wordPrefix = prefix
+        { wordIndent = Indent 0
+        , wordPrefix = prefix
         , wordText = text
         , wordSuffix = Text.concat [suffixBeforeEmdash, emdash]
         , wordLast = NotLastWordInParagraph

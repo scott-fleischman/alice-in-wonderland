@@ -15,6 +15,7 @@ newtype ParagraphSeq = ParagraphSeq (Seq Text) deriving (Eq, Ord, Show)
 newtype BeforeCount = BeforeCount Int deriving (Eq, Ord, Show)
 newtype AfterCount = AfterCount Int deriving (Eq, Ord, Show)
 newtype Sentence = Sentence (Seq Word) deriving (Eq, Ord, Show)
+newtype Indent = Indent Int deriving (Eq, Ord, Show)
 
 data Body = Body
   { bodyPreamble :: GutenbergPreamble
@@ -42,7 +43,8 @@ data ParagraphFormat
 data EditionOption = EarlyEdition | LaterEdition deriving (Eq, Ord, Show)
 data LastWordInParagraph = NotLastWordInParagraph | IsLastWordInParagraph deriving (Eq, Ord, Show)
 data Word = Word
-  { wordPrefix :: Text
+  { wordIndent :: Indent
+  , wordPrefix :: Text
   , wordText :: Text
   , wordSuffix :: Text
   , wordLast :: LastWordInParagraph

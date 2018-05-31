@@ -8,9 +8,25 @@ import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
 
-wordToText :: Alice.Structure.Word -> Text
-wordToText word = Text.concat
-  [ (useUnicodeEmdash . Alice.Structure.wordPrefix) word
+renderWords :: Seq Alice.Structure.Word -> Text
+renderWords Seq.Empty = Text.empty
+renderWords (word :<| Seq.Empty) = renderWord word
+renderWords (word1 :<| word2 :<| rest)
+  | hasIndent word2 = Text.concat [renderWord word1, "\n", renderWords (word2 :<| rest)]
+  | renderedWord1 <- renderWord word1
+  , isEmdashSuffix renderedWord1 = Text.append renderedWord1 $ renderWords (word2 :<| rest)
+  | otherwise = Text.concat [renderWord word1, " ", renderWords (word2 :<| rest)]
+
+hasIndent :: Alice.Structure.Word -> Bool
+hasIndent = (> 0) . getIndentValue
+
+getIndentValue :: Alice.Structure.Word -> Int
+getIndentValue = (\(Alice.Structure.Indent indent) -> indent) . Alice.Structure.wordIndent
+
+renderWord :: Alice.Structure.Word -> Text
+renderWord word = Text.concat
+  [ Text.replicate (getIndentValue word) " "
+  , (useUnicodeEmdash . Alice.Structure.wordPrefix) word
   , Alice.Structure.wordText word
   , (useUnicodeEmdash . Alice.Structure.wordSuffix) word
   ]
