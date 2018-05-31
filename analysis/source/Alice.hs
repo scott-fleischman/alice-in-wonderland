@@ -4,6 +4,7 @@
 module Alice where
 
 import qualified Alice.Parse
+import qualified Alice.Render
 import qualified Alice.Sentence
 import qualified Alice.Structure
 import qualified Alice.TextFile
@@ -60,7 +61,7 @@ printChapterSentences (Alice.Structure.Chapter number (Alice.Structure.ChapterTi
   let
     chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
     sentences = Alice.Sentence.parseAllSentences chapterWords
-  mapM_ (\(Alice.Structure.Sentence words) -> Text.IO.putStrLn . Text.append "\n" . Text.intercalate " " . fmap wordToText . Foldable.toList $ words)  sentences
+  mapM_ (\(Alice.Structure.Sentence words) -> Text.IO.putStrLn . Text.append "\n" . Text.intercalate " " . fmap Alice.Render.wordToText . Foldable.toList $ words)  sentences
   putStrLn "\n\n\n"
 
 printChapter :: Alice.Structure.Chapter -> IO ()
@@ -82,15 +83,8 @@ printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
     $ chapterWords
   putStrLn "\n\n\n"
 
-wordToText :: Alice.Structure.Word -> Text
-wordToText word = Text.concat
-  [ Alice.Structure.wordPrefix word
-  , Alice.Structure.wordText word
-  , Alice.Structure.wordSuffix word
-  ]
-
 printWord :: Alice.Structure.Word -> IO ()
-printWord = Text.IO.putStr . wordToText
+printWord = Text.IO.putStr . Alice.Render.wordToText
 
 printWordLn :: Alice.Structure.Word -> IO ()
 printWordLn word = do
@@ -101,11 +95,11 @@ printWordContextLn :: Alice.Structure.WordContext -> IO ()
 printWordContextLn (Alice.Structure.WordContext before word after) =
   Text.IO.putStrLn $
     Text.intercalate "   "
-      [ (Text.intercalate " " . fmap wordToText . Foldable.toList) before
+      [ (Text.intercalate " " . fmap Alice.Render.wordToText . Foldable.toList) before
       , "   [[ "
-      , wordToText word
+      , Alice.Render.wordToText word
       , " ]]   "
-      , (Text.intercalate " " . fmap wordToText . Foldable.toList) after
+      , (Text.intercalate " " . fmap Alice.Render.wordToText . Foldable.toList) after
       ]
 
 printPair :: Show a => (Text, a) -> IO ()
