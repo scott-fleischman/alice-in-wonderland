@@ -4,6 +4,7 @@ module Alice.Render where
 
 import qualified Alice.Structure
 import qualified Data.Char as Char
+import qualified Data.Maybe as Maybe
 import           Data.Sequence (Seq((:<|)))
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
@@ -13,13 +14,21 @@ renderAllWords :: Seq Alice.Structure.Word -> Text
 renderAllWords = normalizeIndent . renderAllWordsUnnormalizedIndent
 
 chunkRendering :: Int -> Text -> Seq Text
-chunkRendering maxLength input =
-  case chunkRenderingOn "; " maxLength input of
-    Just result -> result
-    Nothing ->
-      case chunkRenderingOn ", " maxLength input of
-        Just result -> result
-        Nothing -> Seq.singleton input
+chunkRendering maxLength input
+  = Maybe.fromMaybe (Seq.singleton input) $ attempt
+    [ "; "
+    , "’ "
+    , ") "
+    , ": "
+    , "—"
+    , ", "
+    ]
+  where
+  attempt [] = Nothing
+  attempt (x : xs) =
+    case chunkRenderingOn x maxLength input of
+      Just result -> Just result
+      Nothing -> attempt xs
 
 chunkRenderingOn :: Text -> Int -> Text -> Maybe (Seq Text)
 chunkRenderingOn _ maxLength input | Text.length input <= maxLength = Just $ Seq.singleton input

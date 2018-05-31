@@ -1,6 +1,7 @@
 name: alice-analysis
 version: 0.1.0
 dependencies:
+- aeson
 - base
 - bytestring
 - containers

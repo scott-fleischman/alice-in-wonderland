@@ -64,7 +64,8 @@ printChapterSentences (Alice.Structure.Chapter number (Alice.Structure.ChapterTi
     sentenceTexts = fmap (\(Alice.Structure.Sentence words) -> Alice.Render.renderAllWords words) sentences
     longSentenceTexts = filter ((>280) . Text.length) $ Foldable.toList sentenceTexts
     chunks = fmap (Alice.Render.chunkRendering 280) longSentenceTexts
-  mapM_ (Text.IO.putStrLn . Text.append "\n" . Text.intercalate "\n" . Foldable.toList) chunks
+    invalidChunks = filter (\x -> length (Seq.findIndicesL ((> 280) . Text.length) x) > 0) chunks
+  mapM_ (Text.IO.putStrLn . Text.append "\n" . Text.intercalate "\n" . Foldable.toList) invalidChunks
   putStrLn "\n\n\n"
 
 printChapter :: Alice.Structure.Chapter -> IO ()
