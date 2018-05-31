@@ -2,6 +2,7 @@
 
 module Alice.Sentence where
 
+import qualified Alice.Render
 import           Alice.Structure
 import qualified Data.Char as Char
 import qualified Data.Foldable as Foldable
@@ -110,7 +111,7 @@ flattenParagraphFormat _ ParagraphFormatStarDivision = Nothing
 flattenParagraphFormat _ ParagraphFormatChorusMarker = Nothing
 
 flattenParagraphLines :: Seq Text -> Text
-flattenParagraphLines = Text.intercalate " " . fmap Text.strip . Foldable.toList
+flattenParagraphLines = Alice.Render.concatTextWords . fmap Text.strip
 
 contextualizeWords :: BeforeCount -> AfterCount -> Seq Word -> Seq WordContext
 contextualizeWords (BeforeCount beforeCount) (AfterCount afterCount) allItems = go Seq.empty (Seq.drop 1 allItems) allItems

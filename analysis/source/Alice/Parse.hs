@@ -2,9 +2,9 @@
 
 module Alice.Parse where
 
+import qualified Alice.Render
 import           Alice.Structure
 import qualified Data.Char as Char
-import qualified Data.Foldable as Foldable
 import           Data.Sequence (Seq((:<|), (:|>)), (<|), (|>))
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
@@ -175,11 +175,11 @@ parseParagraphFormats = go Seq.empty
   go paras (ParagraphSeq paraLines@(firstLine :<| _) :<| restParas)
     | (not . Text.null) firstLine
     , (Char.isSpace . Text.head) firstLine
-    = if ((== "CHORUS.") . Text.strip . Text.intercalate " " . Foldable.toList) paraLines
+    = if ((== "CHORUS.") . Text.strip . Alice.Render.concatTextWords) paraLines
       then go (paras |> ParagraphFormatChorusMarker) restParas
       else go (paras |> ParagraphFormatIndented paraLines) restParas
   go paras (ParagraphSeq paraLines :<| restParas) =
-    let spacedText = (Text.intercalate " " . Foldable.toList) paraLines
+    let spacedText = Alice.Render.concatTextWords paraLines
     in go (paras |> ParagraphFormatPlain spacedText) restParas
 
 getStarParaCount :: Seq ParagraphSeq -> (Int, Seq ParagraphSeq)
@@ -187,7 +187,7 @@ getStarParaCount = go 0
   where
   go numberSoFar Seq.Empty = (numberSoFar, Seq.empty)
   go numberSoFar (ParagraphSeq paraLines :<| rest) =
-    let paraText = (Text.concat . Foldable.toList) paraLines
+    let paraText = Alice.Render.concatTextWords paraLines
     in if Text.all (\c -> Char.isSpace c || c == '*') paraText
       then go (numberSoFar + 1) rest
       else (numberSoFar, rest)
