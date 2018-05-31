@@ -9,7 +9,44 @@ import           Data.Sequence (Seq((:<|), (:|>)))
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
-import           Prelude hiding (Word)
+import           Prelude hiding (Word, words)
+
+parseAllSentences :: Seq Word -> Seq Sentence
+parseAllSentences words = go Seq.empty wordContexts
+  where
+  wordContexts = contextualizeWords (BeforeCount 0) (AfterCount 1) words
+  go sentences context =
+    case parseSentence context of
+      (Nothing, _) -> sentences
+      (Just sentence, rest) -> go (sentences :|> sentence) rest
+
+parseSentence :: Seq WordContext -> (Maybe Sentence, Seq WordContext)
+parseSentence = go Seq.empty
+  where
+  go Seq.Empty Seq.Empty = (Nothing, Seq.empty)
+  go wordsSoFar@(_ :<| _) Seq.Empty = (Just (Sentence wordsSoFar), Seq.empty)
+  go wordsSoFar (nextWordContext :<| rest)
+    | IsEndOfSentence <- isEndOfSentence nextWordContext = (Just (Sentence wordsNext), rest)
+    | otherwise = go wordsNext rest
+    where
+    wordsNext = wordsSoFar :|> wordContextWord nextWordContext
+
+data SentenceEnd = IsEndOfSentence | NotEndOfSentence
+
+isEndOfSentence :: WordContext -> SentenceEnd
+isEndOfSentence wordContext
+  | word <- wordContextWord wordContext
+  , IsLastWordInParagraph <- wordLast word = IsEndOfSentence
+
+  | word <- wordContextWord wordContext
+  , suffix <- wordSuffix word
+  , Just _ <- Text.find (\c -> c == '.' || c == '!' || c == '?') suffix
+  , (nextWord :<| _) <- wordContextAfter wordContext
+  , nextWordText <- wordText nextWord
+  , Just (firstChar, _) <- Text.uncons nextWordText
+  , Char.isUpper firstChar = IsEndOfSentence
+
+  | otherwise = NotEndOfSentence
 
 allParagraphWords :: EditionOption -> Seq ParagraphFormat -> Seq Word
 allParagraphWords editionOption = Foldable.foldMap (paragraphWords editionOption)

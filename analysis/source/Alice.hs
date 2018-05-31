@@ -16,6 +16,7 @@ import qualified Data.Set as Set
 import           Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.IO as Text.IO
+import           Prelude hiding (words)
 
 run :: FilePath -> IO ()
 run path = do
@@ -28,7 +29,8 @@ run path = do
 
   let chapters = Alice.Structure.bodyChapters body
   putStrLn $ "\nChapter Count: " ++  (show . length) chapters
-  mapM_ printChapter chapters
+  mapM_ printChapterSentences chapters
+--  mapM_ printChapter chapters
 
 printSuffixSet :: Alice.Structure.Body -> IO ()
 printSuffixSet body = do
@@ -49,6 +51,17 @@ printSuffixSet body = do
       . Foldable.toList
       $ allWords
   mapM_ Text.IO.putStrLn suffixSet
+
+printChapterSentences :: Alice.Structure.Chapter -> IO ()
+printChapterSentences (Alice.Structure.Chapter number (Alice.Structure.ChapterTitle titleText) _contents paragraphs) = do
+  putStr $ "Chapter " ++ show number ++ ". "
+  Text.IO.putStrLn titleText
+  putStrLn ""
+  let
+    chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
+    sentences = Alice.Sentence.parseAllSentences chapterWords
+  mapM_ (\(Alice.Structure.Sentence words) -> Text.IO.putStrLn . Text.append "\n" . Text.intercalate " " . fmap wordToText . Foldable.toList $ words)  sentences
+  putStrLn "\n\n\n"
 
 printChapter :: Alice.Structure.Chapter -> IO ()
 printChapter (Alice.Structure.Chapter number title _contents paragraphs) = do
