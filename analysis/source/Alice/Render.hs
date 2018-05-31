@@ -12,6 +12,32 @@ import qualified Data.Text as Text
 renderAllWords :: Seq Alice.Structure.Word -> Text
 renderAllWords = normalizeIndent . renderAllWordsUnnormalizedIndent
 
+chunkRendering :: Int -> Text -> Seq Text
+chunkRendering maxLength input =
+  case chunkRenderingOn "; " maxLength input of
+    Just result -> result
+    Nothing ->
+      case chunkRenderingOn ", " maxLength input of
+        Just result -> result
+        Nothing -> Seq.singleton input
+
+chunkRenderingOn :: Text -> Int -> Text -> Maybe (Seq Text)
+chunkRenderingOn _ maxLength input | Text.length input <= maxLength = Just $ Seq.singleton input
+chunkRenderingOn separator maxLength input =
+  let
+    (firstPass, remainder) = Text.splitAt maxLength input
+    (beforeIncludingSep, afterSep) = Text.breakOnEnd separator firstPass
+  in if Text.null beforeIncludingSep
+    then Nothing
+    else do
+      rest <- chunkRenderingOn separator maxLength (Text.append afterSep remainder)
+      let
+        stripped =
+          if Text.stripEnd separator /= separator
+            then Text.stripEnd beforeIncludingSep
+            else beforeIncludingSep
+      Just $ stripped :<| rest
+
 normalizeIndent :: Text -> Text
 normalizeIndent input | Text.null input = input
 normalizeIndent input =

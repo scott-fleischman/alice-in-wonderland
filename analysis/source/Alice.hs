@@ -61,7 +61,10 @@ printChapterSentences (Alice.Structure.Chapter number (Alice.Structure.ChapterTi
   let
     chapterWords = Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition paragraphs
     sentences = Alice.Sentence.parseAllSentences chapterWords
-  mapM_ (\(Alice.Structure.Sentence words) -> Text.IO.putStrLn . Text.append "\n" . Alice.Render.renderAllWords $ words) sentences
+    sentenceTexts = fmap (\(Alice.Structure.Sentence words) -> Alice.Render.renderAllWords words) sentences
+    longSentenceTexts = filter ((>280) . Text.length) $ Foldable.toList sentenceTexts
+    chunks = fmap (Alice.Render.chunkRendering 280) longSentenceTexts
+  mapM_ (Text.IO.putStrLn . Text.append "\n" . Text.intercalate "\n" . Foldable.toList) chunks
   putStrLn "\n\n\n"
 
 printChapter :: Alice.Structure.Chapter -> IO ()

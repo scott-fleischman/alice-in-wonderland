@@ -1,6 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 import qualified Alice.Pdf
+import qualified Alice.Render
 import qualified Alice.Sentence
 import qualified Alice.TextFile
 import qualified Control.Monad
@@ -51,6 +53,12 @@ prop_reduceToSizeFromLeft =
     Seq.fromList [4,5] === Alice.Sentence.reduceToSizeFromLeft 2 five
     Seq.singleton 5 === Alice.Sentence.reduceToSizeFromLeft 1 five
     Seq.empty === Alice.Sentence.reduceToSizeFromLeft 0 five
+
+prop_chunkRenderingOn :: Hedgehog.Property
+prop_chunkRenderingOn =
+  Hedgehog.withTests 1 . Hedgehog.property $ do
+    (Seq.fromList) ["abc;", "def;", "ghi;", "jkl"] === Alice.Render.chunkRendering 6 "abc; def; ghi; jkl"
+    (Seq.fromList) ["abc,", "def,", "ghi,", "jkl"] === Alice.Render.chunkRendering 6 "abc, def, ghi, jkl"
 
 tests :: IO Bool
 tests =
