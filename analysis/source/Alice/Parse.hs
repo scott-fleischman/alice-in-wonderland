@@ -88,11 +88,11 @@ parseAllChaptersFromLeft = go Seq.empty
   go chapters input = do
     result <- parseChapterFromLeft input
     case result of
-      Left () -> return chapters
-      Right (chapter, rest) -> go (chapters |> chapter) rest
+      Nothing -> return chapters
+      Just (chapter, rest) -> go (chapters |> chapter) rest
 
-parseChapterFromLeft :: Seq Text -> Either Error (Either () (Chapter, Seq Text))
-parseChapterFromLeft Seq.Empty = Right (Left ())
+parseChapterFromLeft :: Seq Text -> Either Error (Maybe (Chapter, Seq Text))
+parseChapterFromLeft Seq.Empty = Right Nothing
 parseChapterFromLeft (line :<| rest) | (Text.null . Text.strip) line = parseChapterFromLeft rest
 parseChapterFromLeft (line :<| rest) | matchesChapter line =
   do
@@ -100,7 +100,7 @@ parseChapterFromLeft (line :<| rest) | matchesChapter line =
     let (ChapterContents contents, moreChapters) = buildContents (ChapterContents Seq.empty) rest
     paragraphSeqs <- parseParagraphSeqs contents
     paragraphFormats <- parseParagraphFormats paragraphSeqs
-    Right (Right (Chapter number title (ChapterContents contents) paragraphFormats, moreChapters))
+    Right (Just (Chapter number title (ChapterContents contents) paragraphFormats, moreChapters))
 parseChapterFromLeft (line :<| _) = Left $ InvalidChapterHeading line
 
 buildContents :: ChapterContents -> Seq Text -> (ChapterContents, Seq Text)
