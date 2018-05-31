@@ -2,6 +2,7 @@
 {-# LANGUAGE TypeApplications #-}
 
 import qualified Alice.Tweets
+import qualified Control.Exception as Exception
 import qualified Control.Lens as Lens
 import qualified Control.Logging as Logging
 import qualified Data.Aeson as Aeson
@@ -28,7 +29,14 @@ main = Logging.withStdoutLogging $ do
       Right result -> return result
   randomTweets <- Random.Shuffle.shuffleM tweetThreads
   manager <- Twitter.Conduit.newManager Twitter.Conduit.tlsManagerSettings
-  mapM_ (postThread manager) $ take 1 randomTweets
+  mapM_ (tryPostThread manager) $ take 1 randomTweets
+
+tryPostThread :: Twitter.Conduit.Manager -> Alice.Tweets.TweetThread -> IO ()
+tryPostThread manager thread = do
+  possibleResult <- Exception.try @Exception.SomeException (postThread manager thread)
+  case possibleResult of
+    Left err -> Logging.warn (Text.pack . show $ err)
+    Right () -> return ()
 
 postThread :: Twitter.Conduit.Manager -> Alice.Tweets.TweetThread -> IO ()
 postThread manager (Alice.Tweets.TweetThread tweets) = go Nothing tweets
