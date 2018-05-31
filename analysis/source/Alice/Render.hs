@@ -8,14 +8,14 @@ import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
 
-renderWords :: Seq Alice.Structure.Word -> Text
-renderWords Seq.Empty = Text.empty
-renderWords (word :<| Seq.Empty) = renderWord word
-renderWords (word1 :<| word2 :<| rest)
-  | hasIndent word2 = Text.concat [renderWord word1, "\n", renderWords (word2 :<| rest)]
+renderAllWords :: Seq Alice.Structure.Word -> Text
+renderAllWords Seq.Empty = Text.empty
+renderAllWords (word :<| Seq.Empty) = renderWord word
+renderAllWords (word1 :<| word2 :<| rest)
+  | hasIndent word2 = Text.concat [renderWord word1, "\n", renderAllWords (word2 :<| rest)]
   | renderedWord1 <- renderWord word1
-  , isEmdashSuffix renderedWord1 = Text.append renderedWord1 $ renderWords (word2 :<| rest)
-  | otherwise = Text.concat [renderWord word1, " ", renderWords (word2 :<| rest)]
+  , isEmdashSuffix renderedWord1 = Text.append renderedWord1 $ renderAllWords (word2 :<| rest)
+  | otherwise = Text.concat [renderWord word1, " ", renderAllWords (word2 :<| rest)]
 
 hasIndent :: Alice.Structure.Word -> Bool
 hasIndent = (> 0) . getIndentValue
