@@ -1,0 +1,434 @@
+All alices: 383
+Alices adjacent to adjectives: 27
+
+Adjectives around Alice with total counts:
+poor 10
+!’ 3
+,’ 3
+?’ 3
+little 3
+.) 1
+anxious 1
+dear 1
+foolish 1
+shiny 1
+thought 1
+went 1
+
+
+
+Alice + adjectives:
+went/JJ Alice/NNP
+poor/JJ Alice/NNP
+little/JJ Alice/NNP
+poor/JJ Alice/NNP
+poor/JJ Alice/NNP
+!’/JJ Alice/NNP
+poor/JJ Alice/NNP
+poor/JJ Alice/NNP
+poor/JJ Alice/NNP
+?’/JJ Alice/NNP
+,’/JJ Alice/NNP
+poor/JJ Alice/NNP
+foolish/JJ Alice/NNP
+thought/JJ Alice/NNP
+poor/JJ Alice/NNP
+!’/JJ Alice/NNP
+!’/JJ Alice/NNP
+poor/JJ Alice/NNP
+anxious/JJ .)/JJ Alice/NNP
+,’/JJ Alice/NNP
+poor/JJ Alice/NNP
+,’/JJ Alice/NNP
+shiny/JJ ?’/JJ Alice/NNP
+?’/JJ Alice/NNP
+Alice/NNP dear/JJ
+little/JJ Alice/NNP
+little/JJ Alice/NNP
+
+
+
+All Alices:
+Alice/NNP was/VBD beginning/VBG to/TO
+book/NN ,’/, thought/VBD Alice/NNP ‘/NNP without/IN pictures/NNS
+;/: nor/CC did/VBD Alice/NNP think/VB it/PRP so/RB
+hurried/VBN on/IN ,/, Alice/NNP started/VBD to/TO her/PRP$
+moment/NN down/RB went/VBD Alice/NNP after/IN it/PRP ,/,
+so/RB suddenly/RB that/IN Alice/NNP had/VBD not/RB a/DT
+Well/UH !’/PRP thought/VBD Alice/NNP to/TO herself/PRP ,/,
+you/PRP see/VBP ,/, Alice/NNP had/VBD learnt/VBN several/JJ
+to/TO ?’/VB (/NNP Alice/NNP had/VBD no/DT idea/NN
+do/VB ,/, so/RB Alice/NNP soon/RB began/VBD talking/VBG
+?’/. And/CC here/RB Alice/NNP began/VBD to/TO get/VB
+Alice/NNP was/VBD not/RB a/DT
+:/: away/RB went/JJ Alice/NNP like/IN the/DT wind/NN
+;/: and/CC when/WRB Alice/NNP had/VBD been/VBN all/PDT
+Alice/NNP opened/VBD the/DT door/NN
+,’/NNP thought/VBD poor/JJ Alice/NNP ,/, ‘/VBZ it/PRP
+lately/RB ,/, that/WDT Alice/NNP had/VBD begun/VBN to/TO
+before/IN ,’/NNP said/VBD Alice/NNP ,)/NNP and/CC round/NN
+the/DT wise/NN little/JJ Alice/NNP was/VBD not/RB going/VBG
+poison/NN ,’/, so/RB Alice/NNP ventured/VBD to/TO taste/NN
+know/VBP ,’/, said/VBD Alice/NNP to/TO herself/PRP ,/,
+alas/RB for/IN poor/JJ Alice/NNP !/.
+that/DT !’/NN said/VBD Alice/NNP to/TO herself/PRP ,/,
+,’/, thought/VBD poor/JJ Alice/NNP ,/, ‘/VBZ to/TO
+it/PRP ,’/, said/VBD Alice/NNP ,/, ‘/NNP and/CC
+cake/NN ,/, but/CC Alice/NNP had/VBD got/VBN so/RB
+curiouser/NN !’/. cried/VBN Alice/NNP (/NNP she/PRP was/VBD
+them/PRP ,’/, thought/VBD Alice/NNP ,/, ‘/NNP or/CC
+Poor/NNP Alice/NN !/.
+yourself/PRP ,’/VBP said/VBD Alice/NNP ,/, ‘/VBZ a/DT
+her/PRP$ waiting/VBG !’/JJ Alice/NNP felt/VBD so/RB desperate/JJ
+Alice/RB took/VBD up/IN the/DT
+,’/VBP said/VBD poor/JJ Alice/NNP ,/, and/CC her/PRP$
+dear/NN !’/. cried/VBN Alice/NNP ,/, with/IN a/DT
+escape/NN !’/NNP said/VBD Alice/NNP ,/, a/DT good/JJ
+(/NN Alice/NN had/VBD been/VBN to/TO
+much/JJ !’/NNP said/VBD Alice/NNP ,/, as/IN she/PRP
+now/RB ,’/, thought/VBD Alice/NNP ,/, ‘/VBZ to/TO
+Mouse/NNP !’/NNP (/NNP Alice/NNP thought/VBD this/DT must/MD
+English/NNP ,’/NNP thought/VBD Alice/NNP ;/: ‘/IN I/PRP
+of/IN history/NN ,/, Alice/NNP had/VBD no/DT very/RB
+pardon/NN !’/. cried/VBN Alice/NNP hastily/RB ,/, afraid/JJ
+not/RB ,’/, said/VBD Alice/NNP in/IN a/DT soothing/VBG
+quiet/JJ thing/NN ,’/, Alice/NNP went/VBD on/IN ,/,
+pardon/NN !’/. cried/VBN Alice/NNP again/RB ,/, for/IN
+indeed/RB !’/NNP said/VBD Alice/NNP ,/, in/IN a/DT
+answer/VB ,/, so/RB Alice/NNP went/VBD on/IN eagerly/RB
+dear/JJ !’/NNP cried/VBD Alice/NNP in/IN a/DT sorrowful/JJ
+with/IN passion/NN ,/, Alice/NNP thought/VBD ),/NNP and/CC
+Alice/RB led/VBD the/DT way/NN
+quite/RB natural/JJ to/TO Alice/NNP to/TO find/VB herself/PRP
+’;/VB and/CC this/DT Alice/NNP would/MD not/RB allow/VB
+Alice/NNP kept/VBD her/PRP$ eyes/NNS
+,/, turning/VBG to/TO Alice/NNP as/IN it/PRP spoke/VBD
+ever/RB ,’/, said/VBD Alice/NNP in/IN a/DT melancholy/NN
+Caucus-race/NNP ?’/NNP said/VBD Alice/NNP ;/: not/RB that/IN
+,/, pointing/VBG to/TO Alice/NNP with/IN one/CD finger/NN
+Prizes/NNP !’/NNP Alice/NNP had/VBD no/DT idea/NN
+,/, turning/VBG to/TO Alice/NNP ./.
+thimble/JJ ,’/NN said/VBD Alice/NNP sadly/RB ./.
+Alice/NNP thought/VBD the/DT whole/JJ
+know/VBP ,’/, said/VBD Alice/NNP ,/, ‘/NNP and/CC
+,/, turning/VBG to/TO Alice/NNP ,/, and/CC sighing/NN
+certainly/RB ,’/, said/VBD Alice/NNP ,/, looking/VBG down/RB
+the/DT Mouse/NNP to/TO Alice/NNP severely/RB ./.
+pardon/NN ,’/, said/VBD Alice/NNP very/RB humbly/RB :/:
+knot/NN !’/NN said/VBD Alice/NNP ,/, always/RB ready/JJ
+!’/RB pleaded/VBD poor/JJ Alice/NNP ./.
+your/PRP$ story/NN !’/. Alice/NNP called/VBD after/IN it/PRP
+do/VBP !’/NNP said/VBD Alice/NNP aloud/NN ,/, addressing/VBG
+Alice/NNP replied/VBD eagerly/RB ,/,
+off/IN ,/, and/CC Alice/NNP was/VBD soon/RB left/VBN
+And/CC here/RB poor/JJ Alice/NNP began/VBD to/TO cry/VB
+I/PRP wonder/VBP ?’/JJ Alice/NNP guessed/VBD in/IN a/DT
+the/DT Rabbit/NNP noticed/VBD Alice/NNP ,/, as/IN she/PRP
+now/RB !’/VBZ And/CC Alice/NNP was/VBD so/RB much/JJ
+it/PRP seems/VBZ ,’/JJ Alice/NNP said/VBD to/TO herself/PRP
+:/: ‘“/VB Miss/NNP Alice/NNP !/.
+don’t/VBP think/VBP ,’/, Alice/NNP went/VBD on/IN ,/,
+?’/VBP Luckily/NNP for/IN Alice/NNP ,/, the/DT little/JJ
+,’/, thought/VBD poor/JJ Alice/NNP ,/, ‘/NNP when/WRB
+then/RB ,’/, thought/VBD Alice/NNP ,/, ‘/NNP shall/NN
+,/, you/PRP foolish/JJ Alice/NNP !’/NNP she/PRP answered/VBD
+Alice/NNP knew/VBD it/PRP was/VBD
+Alice/NNP heard/VBD it/PRP say/VBP
+won’t/VBP ’/PRP thought/VBD Alice/NNP ,/, and/CC ,/,
+this/DT ,/, and/CC Alice/NNP could/MD only/RB hear/VB
+be/VB !’/VBN thought/JJ Alice/NNP ./.
+he/PRP ?’/VBP said/VBD Alice/NNP to/TO herself/PRP ./.
+Bill/NNP ,’/NNP thought/VBD Alice/NNP ,)/NNP ‘/NNP Well/UH
+voice/NN ;/: and/CC Alice/NNP called/VBD out/IN as/RB
+instantly/RB ,/, and/CC Alice/NNP thought/VBD to/TO herself/PRP
+again/RB ,/, and/CC Alice/NNP heard/VBD the/DT Rabbit/NNP
+WHAT/WP ?’/NNP thought/VBD Alice/NNP ;/: but/CC she/PRP
+Alice/RB noticed/VBN with/IN some/DT
+a/DT rush/NN at/IN Alice/NNP the/DT moment/NN she/PRP
+do/VB ,’/, said/VBD Alice/NNP to/TO herself/PRP ,/,
+thing/NN !’/NNP said/VBD Alice/NNP ,/, in/IN a/DT
+it/PRP ;/: then/RB Alice/NNP dodged/VBD behind/IN a/DT
+it/PRP ;/: then/RB Alice/NNP ,/, thinking/VBG it/PRP
+This/DT seemed/VBN to/TO Alice/NNP a/DT good/JJ opportunity/NN
+was/VBD !’/NNP said/VBD Alice/NNP ,/, as/IN she/PRP
+Alice/NNP looked/VBD all/DT round/NN
+The/DT Caterpillar/NNP and/CC Alice/NNP looked/VBD at/IN each/DT
+Alice/NNP replied/VBD ,/, rather/RB
+sir/JJ ’/NN said/VBD Alice/NNP ,/, ‘/NNP because/IN
+more/RBR clearly/RB ,’/, Alice/NNP replied/VBD very/RB politely/RB
+yet/RB ,’/, said/VBD Alice/NNP ;/: ‘/NN but/CC
+different/JJ ,’/NNP said/VBD Alice/NNP ;/: ‘/RB all/DT
+Alice/NNP felt/VBD a/DT little/JJ
+;/: and/CC as/IN Alice/NNP could/MD not/RB think/VB
+,/, certainly/RB :/: Alice/NNP turned/VBD and/CC came/VBD
+all/DT ?’/NNP said/VBD Alice/NNP ,/, swallowing/VBG down/RB
+Alice/NNP thought/VBD she/PRP might/MD
+sir/JJ ,’/NN said/VBD Alice/NNP ;/: ‘/IN I/PRP
+came/VBD different/JJ !’/NNP Alice/NNP replied/VBD in/IN a/DT
+Alice/NNP folded/VBD her/PRP$ hands/NNS
+afraid/JJ ,’/NNP said/VBD Alice/NNP ,/, timidly/RB ;/:
+to/TO size/VB ,’/, Alice/NNP hastily/RB replied/VBD ;/:
+Alice/NNP said/VBD nothing/NN :/:
+mind/NN ,’/, said/VBD Alice/NNP :/: ‘/IN three/CD
+!’/NNP pleaded/VBD poor/JJ Alice/NNP in/IN a/DT piteous/JJ
+This/DT time/NN Alice/NNP waited/VBD patiently/RB until/IN
+WHAT/WP ?’/NNP thought/VBD Alice/NNP to/TO herself/PRP ./.
+Alice/NNP remained/VBD looking/VBG thoughtfully/RB
+be/VB ?’/VBN said/VBD Alice/NNP ./.
+serpent/NN !’/NNP said/VBD Alice/NNP indignantly/RB ./.
+about/IN ,’/, said/VBD Alice/NNP ./.
+pleasing/JJ them/PRP !’/JJ Alice/NNP was/VBD more/JJR and/CC
+annoyed/VBN ,’/, said/VBD Alice/NNP ,/, who/WP was/VBD
+you/PRP !’/VBP said/VBD Alice/NNP ./.
+girl/NN ,’/NN said/VBD Alice/NNP ,/, rather/RB doubtfully/RB
+certainly/RB ,’/, said/VBD Alice/NNP ,/, who/WP was/VBD
+new/JJ idea/NN to/TO Alice/NNP ,/, that/IN she/PRP
+ME/NNP ,’/NNP said/VBD Alice/NNP hastily/RB ;/: ‘/NN
+Alice/NNP crouched/VBD down/RB among/IN
+there/EX ,’/, thought/VBD Alice/NNP ,/, ‘/NNP it’ll/NN
+both/DT footmen/NNS ,/, Alice/NNP noticed/VBD ,/, had/VBD
+Alice/NNP laughed/VBD so/RB much/JJ
+Alice/NNP went/VBD timidly/RB up/IN
+then/RB ,’/, said/VBD Alice/NNP ,/, ‘/NNP how/WRB
+,/, and/CC this/DT Alice/NNP thought/VBD decidedly/RB uncivil/JJ
+in/IN ?’/NNP asked/VBD Alice/NNP again/RB ,/, in/IN
+doubt/NN :/: only/RB Alice/NNP did/VBD not/RB like/VB
+do/VB ?’/NNP said/VBD Alice/NNP ./.
+him/PRP ,’/, said/VBD Alice/NNP desperately/RB :/: ‘/VB
+that/DT soup/NN !’/NNP Alice/NNP said/VBD to/TO herself/PRP
+me/PRP ,’/, said/VBD Alice/NNP ,/, a/DT little/JJ
+sudden/JJ violence/NN that/WDT Alice/NNP quite/RB jumped/VBD ;/:
+that/WDT do/VBP ,’/, Alice/NNP said/VBD very/RB politely/RB
+a/DT fact/NN .’/: Alice/NNP did/VBD not/RB at/IN
+doing/VBG !’/CD cried/VBN Alice/NNP ,/, jumping/VBG up/IN
+advantage/NN ,’/, said/VBD Alice/NNP ,/, who/WP felt/VBD
+her/PRP$ head/NN !’/. Alice/NNP glanced/VBD rather/RB anxiously/RB
+so/RB ,/, that/DT Alice/NNP could/MD hardly/RB hear/VB
+Duchess/NNP said/VBD to/TO Alice/NNP ,/, flinging/VBG the/DT
+Alice/NNP caught/VBD the/DT baby/NN
+star-fish/JJ ,’/NN thought/VBD Alice/NNP ./.
+me/PRP ,’/VBP thought/VBD Alice/NNP ,/, ‘/NNP they’re/JJ
+grunt/NN ,’/, said/VBD Alice/NNP ;/: ‘/JJ that’s/NN
+again/RB ,/, and/CC Alice/NNP looked/VBD very/RB anxiously/RB
+baby/NN :/: altogether/RB Alice/NNP did/VBD not/RB like/IN
+dear/NN ,’/, said/VBD Alice/NNP ,/, seriously/RB ,/,
+Alice/NNP was/VBD just/RB beginning/VBG
+when/WRB it/PRP saw/VBD Alice/NNP ./.
+far/RB ,’/, thought/VBD Alice/NNP ,/, and/CC she/PRP
+where/WRB —’/NNP said/VBD Alice/NNP ./.
+get/VBP SOMEWHERE/NNP ,’/NNP Alice/NNP added/VBD as/IN an/DT
+long/JJ enough/RB .’/: Alice/NNP felt/VBD that/IN this/DT
+mad/NNS people/NNS ,’/VBP Alice/NNP remarked/VBD ./.
+mad/NN ?’/NNP said/VBD Alice/NNP ./.
+come/VBN here/RB .’/: Alice/NNP didn’t/NN think/NN that/WDT
+so/RB ,’/, said/VBD Alice/NNP ./.
+growling/VBG ,’/, said/VBD Alice/NNP ./.
+much/JJ ,’/, said/VBD Alice/NNP ,/, ‘/VBZ but/CC
+Alice/NNP was/VBD not/RB much/JJ
+a/DT pig/NN ,’/, Alice/NNP quietly/RB said/VBD ,/,
+Alice/NNP waited/VBD a/DT little/JJ
+pig/JJ ,’/, replied/VBD Alice/NNP ;/: ‘/NN and/CC
+grin/NN ,’/, thought/VBD Alice/NNP ;/: ‘/NN but/CC
+Dormouse/NNP ,’/NNP thought/VBD Alice/NNP ;/: ‘/NN only/RB
+when/WRB they/PRP saw/VBD Alice/NNP coming/VBG ./.
+room/NN !’/NNP said/VBD Alice/NNP indignantly/RB ,/, and/CC
+Alice/NNP looked/VBD all/DT round/NN
+it/PRP ,’/, said/VBD Alice/NNP angrily/RB ./.
+table/NN ,’/NNP said/VBD Alice/NNP ;/: ‘/NNP it’s/NN
+been/VBN looking/VBG at/IN Alice/NNP for/IN some/DT time/NN
+personal/JJ remarks/NNS ,’/VBP Alice/NNP said/VBD with/IN some/DT
+now/RB !’/VBZ thought/VBN Alice/NNP ./.
+so/RB ,’/, said/VBD Alice/NNP ./.
+I/PRP do/VBP ,’/, Alice/NNP hastily/RB replied/VBD ;/:
+minute/NN ,/, while/IN Alice/NNP thought/VBD over/IN all/DT
+,/, turning/VBG to/TO Alice/NNP :/: he/PRP had/VBD
+Alice/RB considered/VBD a/DT little/JJ
+you/PRP know/VBP .’/. Alice/NNP had/VBD been/VBN looking/VBG
+course/NN not/RB ,’/, Alice/NNP replied/VBD very/RB readily/RB
+Alice/NNP felt/VBD dreadfully/RB puzzled/VBN
+,/, turning/VBG to/TO Alice/NNP again/RB ./.
+it/PRP up/IN ,’/, Alice/NNP replied/VBD :/: ‘/VB
+Alice/NNP sighed/VBD wearily/RB ./.
+mean/VB ,’/, said/VBD Alice/NNP ./.
+Perhaps/RB not/RB ,’/, Alice/NNP cautiously/RB replied/VBD :/:
+certainly/RB ,’/, said/VBD Alice/NNP thoughtfully/RB :/: ‘/VB
+YOU/PRP manage/VBP ?’/. Alice/NNP asked/VBD ./.
+it/PRP ,’/, said/VBD Alice/NNP ./.
+savage/JJ !’/NNP exclaimed/VBD Alice/NNP ./.
+suppose/VBP ?’/NNP said/VBD Alice/NNP ./.
+beginning/NN again/RB ?’/VBD Alice/NNP ventured/VBD to/TO ask/VB
+one/CD ,’/, said/VBD Alice/NNP ,/, rather/RB alarmed/VBN
+do/VBP !’/. pleaded/VBN Alice/NNP ./.
+on/IN ?’/NNP said/VBD Alice/NNP ,/, who/WP always/RB
+you/PRP know/VBP ,’/, Alice/NNP gently/RB remarked/VBD ;/:
+VERY/NNP ill/JJ .’/. Alice/NNP tried/VBD to/TO fancy/JJ
+Hare/NNP said/VBD to/TO Alice/NNP ,/, very/RB earnestly/RB
+nothing/NN yet/RB ,’/, Alice/NNP replied/VBD in/IN an/DT
+opinion/NN ,’/, said/VBD Alice/NNP ./.
+Alice/NNP did/VBD not/RB quite/RB
+such/JJ thing/NN !’/JJ Alice/NNP was/VBD beginning/VBG very/RB
+go/VB on/IN !’/NNP Alice/NNP said/VBD very/RB humbly/RB
+draw/VB ?’/NNP said/VBD Alice/NNP ,/, quite/RB forgetting/VBG
+place/NN ,/, and/CC Alice/NNP rather/RB unwillingly/RB took/VBD
+change/NN :/: and/CC Alice/NNP was/VBD a/DT good/JJ
+Alice/NNP did/VBD not/RB wish/VBP
+the/DT well/RB ,’/VBN Alice/NNP said/VBD to/TO the/DT
+so/RB confused/VBD poor/JJ Alice/NNP ,/, that/IN she/PRP
+M/NNP ?’/NNP said/VBD Alice/NNP ./.
+Alice/NNP was/VBD silent/NN ./.
+me/PRP ,’/, said/VBD Alice/NNP ,/, very/RB much/JJ
+was/VBD more/JJR than/IN Alice/NNP could/MD bear/VB :/:
+again/RB !’/NNP said/VBD Alice/NNP as/IN she/PRP picked/VBD
+Alice/NNP thought/VBD this/DT a/DT
+to/TO fall/VB upon/IN Alice/NNP ,/, as/IN she/PRP
+me/PRP ,’/, said/VBD Alice/NNP ,/, a/DT little/JJ
+footsteps/NNS ,/, and/CC Alice/NNP looked/VBD round/NN ,/,
+and/CC among/IN them/PRP Alice/NNP recognised/VBD the/DT White/NNP
+Alice/NNP was/VBD rather/RB doubtful/JJ
+came/VBD opposite/RB to/TO Alice/NNP ,/, they/PRP all/DT
+,/, turning/VBG to/TO Alice/NNP ,/, she/PRP went/VBD
+My/PRP$ name/NN is/VBZ Alice/NNP ,/, so/RB please/VB
+Majesty/NNP ,’/, said/VBD Alice/NNP very/RB politely/RB ;/:
+know/VB ?’/NNP said/VBD Alice/NNP ,/, surprised/VBN at/IN
+Nonsense/NN !’/NNP said/VBD Alice/NNP ,/, very/RB loudly/RB
+who/WP ran/VBD to/TO Alice/NNP for/IN protection/NN ./.
+beheaded/VBN !’/NNP said/VBD Alice/NNP ,/, and/CC she/PRP
+and/CC looked/VBD at/IN Alice/NNP ,/, as/IN the/DT
+Yes/UH !’/FW shouted/VBN Alice/NNP ./.
+Queen/NNP ,/, and/CC Alice/NNP joined/VBD the/DT procession/NN
+Very/NNP ,’/NNP said/VBD Alice/NNP :/: ‘—/VB where’s/IN
+for/IN ?’/NNP said/VBD Alice/NNP ./.
+didn’t/VBP ,’/, said/VBD Alice/NNP :/: ‘/IN I/PRP
+Alice/NNP gave/VBD a/DT little/JJ
+Alice/NNP thought/VBD she/PRP had/VBD
+The/DT chief/JJ difficulty/NN Alice/NNP found/VBD at/IN first/JJ
+the/DT ground/NN ,/, Alice/NNP soon/RB came/VBD to/TO
+Alice/NNP began/VBD to/TO feel/VB
+Alice/NNP waited/VBD till/IN the/DT
+,/, and/CC then/RB Alice/NNP put/VB down/RB her/PRP$
+all/DT fairly/RB ,’/, Alice/NNP began/VBD ,/, in/IN
+all/DT ,’/, said/VBD Alice/NNP :/: ‘/JJ she’s/NN
+going/VBG up/IN to/TO Alice/NNP ,/, and/CC looking/VBG
+Cat/NNP ,’/NNP said/VBD Alice/NNP :/: ‘/RB allow/VB
+He/PRP got/VBD behind/VBN Alice/NNP as/IN he/PRP spoke/VBD
+king/NN ,’/, said/VBD Alice/NNP ./.
+Alice/NNP thought/VBD she/PRP might/MD
+which/WDT seemed/VBD to/TO Alice/NNP an/DT excellent/JJ opportunity/NN
+garden/NN ,/, where/WRB Alice/NNP could/MD see/VB it/PRP
+much/JJ ,’/, thought/VBD Alice/NNP ,/, ‘/NNP as/IN
+The/DT moment/NN Alice/NNP appeared/VBD ,/, she/PRP
+and/CC anxious/JJ .)/JJ Alice/NNP could/MD think/VB of/IN
+Alice/NNP was/VBD very/RB glad/JJ
+hasn’t/VBZ one/CD ,’/, Alice/NNP ventured/VBD to/TO remark/VB
+Alice/NNP did/VBD not/RB much/JJ
+Somebody/NNP said/VBD ,’/NNP Alice/NNP whispered/VBN ,/, ‘/VBZ
+in/IN things/NNS !’/. Alice/NNP thought/VBD to/TO herself/PRP
+might/MD bite/VB ,’/JJ Alice/NNP cautiously/RB replied/VBD ,/,
+a/DT bird/NN ,’/, Alice/NNP remarked/VBD ./.
+THINK/NNP ,’/NNP said/VBD Alice/NNP ./.
+to/TO everything/NN that/DT Alice/NNP said/VBD ;/: ‘/NNP
+know/VBP !’/NNP exclaimed/VBN Alice/NNP ,/, who/WP had/VBD
+that/IN better/JJR ,’/, Alice/NNP said/VBD very/RB politely/RB
+that/DT ,’/NN said/VBD Alice/NNP ./.
+present/JJ !’/NNP thought/VBD Alice/NNP ./.
+think/VB ,’/, said/VBD Alice/NNP sharply/RB ,/, for/IN
+Alice/RB looked/VBD up/IN ,/,
+Queen/NNP said/VBD to/TO Alice/NNP ;/: and/CC Alice/NNP
+Alice/NNP ;/: and/CC Alice/NNP was/VBD too/RB much/JJ
+Queen/NNP ,/, and/CC Alice/NNP ,/, were/VBD in/IN
+and/CC said/VBD to/TO Alice/NNP ,/, ‘/NNP Have/VB
+No/NNP ,’/NNP said/VBD Alice/NNP ./.
+one/CD ,’/, said/VBD Alice/NNP ./.
+off/IN together/RB ,/, Alice/NNP heard/VBD the/DT King/NNP
+off/IN ,/, leaving/VBG Alice/NNP alone/RB with/IN the/DT
+Alice/NNP did/VBD not/RB quite/RB
+,/, half/NN to/TO Alice/NNP ./.
+fun/NN ?’/NNP said/VBD Alice/NNP ./.
+here/RB ,’/VBP thought/VBD Alice/NNP ,/, as/IN she/PRP
+came/VBD nearer/RB ,/, Alice/NNP could/MD hear/VB him/PRP
+Alice/NNP thought/VBD to/TO herself/PRP
+Alice/NNP was/VBD very/RB nearly/RB
+wasn’t/VBZ one/CD ?’/CD Alice/NNP asked/VBD ./.
+looked/VBD at/IN poor/JJ Alice/NNP ,/, who/WP felt/VBD
+didn’t/VBP !’/. interrupted/VBN Alice/NNP ./.
+Gryphon/NNP ,/, before/IN Alice/NNP could/MD speak/VB again/RB
+too/RB ,’/, said/VBD Alice/NNP ;/: ‘/RB you/PRP
+Yes/UH ,’/, said/VBD Alice/NNP ,/, ‘/VBZ we/PRP
+not/RB !’/NNP said/VBD Alice/NNP indignantly/RB ./.
+much/JJ ,’/NNP said/VBD Alice/NNP ;/: ‘/JJ living/NN
+that/IN ?’/CD inquired/VBN Alice/NNP ./.
+“/JJ Uglification/NNP ,”’/, Alice/NNP ventured/VBD to/TO say/VB
+Yes/UH ,’/NNP said/VBD Alice/NNP doubtfully/RB :/: ‘/VB
+a/DT simpleton/NN .’/: Alice/NNP did/VBD not/RB feel/VB
+like/IN ?’/NNP said/VBD Alice/NNP ./.
+lessons/NNS ?’/VBP said/VBD Alice/NNP ,/, in/IN a/DT
+plan/NN !’/. exclaimed/VBN Alice/NNP ./.
+new/JJ idea/NN to/TO Alice/NNP ,/, and/CC she/PRP
+the/DT twelfth/NN ?’/. Alice/NNP went/VBD on/IN eagerly/RB
+He/PRP looked/VBD at/IN Alice/NNP ,/, and/CC tried/VBD
+lobster/NN —’/NN (/NNP Alice/NNP began/VBD to/TO say/VB
+indeed/RB ,’/, said/VBD Alice/NNP ./.
+and/CC looked/VBD at/IN Alice/NNP ./.
+dance/JJ ,’/NNP said/VBD Alice/NNP timidly/RB ./.
+indeed/RB ,’/, said/VBD Alice/NNP ./.
+round/NN and/CC round/NN Alice/NNP ,/, every/DT now/RB
+watch/VB ,’/, said/VBD Alice/NNP ,/, feeling/NN very/RB
+Yes/UH ,’/NNP said/VBD Alice/NNP ,/, ‘/NNP I’ve/NNP
+believe/VBP so/RB ,’/JJ Alice/NNP replied/VBD thoughtfully/RB ./.
+you/PRP ,’/VBP said/VBD Alice/NNP ,/, ‘/NNP it’s/PRP$
+it/PRP ,’/, said/VBD Alice/NNP ./.
+Alice/NNP was/VBD thoroughly/RB puzzled/VBN
+so/RB shiny/JJ ?’/JJ Alice/NNP looked/VBD down/RB at/IN
+made/VBD of/IN ?’/NNP Alice/NNP asked/VBD in/IN a/DT
+whiting/VBG ,’/NNP said/VBD Alice/NNP ,/, whose/WP$ thoughts/NNS
+really/RB ?’/VBP said/VBD Alice/NNP in/IN a/DT tone/NN
+purpose/NN ”?’/NNP said/VBD Alice/NNP ./.
+morning/NN ,’/, said/VBD Alice/NNP a/DT little/JJ timidly/NN
+time/NN .’/. So/RB Alice/NNP began/VBD telling/VBG them/PRP
+of/IN authority/NN over/IN Alice/NNP ./.
+lessons/NNS !’/VBP thought/VBD Alice/NNP ;/: ‘/IN I/PRP
+uncommon/JJ nonsense/NN .’/. Alice/NNP said/VBD nothing/NN ;/:
+in/IN dancing/VBG .’/NNP Alice/NNP said/VBD ;/: but/CC
+his/PRP$ garden/JJ .”’/. Alice/NNP did/VBD not/RB dare/NN
+Gryphon/NNP :/: and/CC Alice/NNP was/VBD only/RB too/RB
+so/RB kind/NN ,’/, Alice/NNP replied/VBD ,/, so/RB
+and/CC ,/, taking/VBG Alice/NNP by/IN the/DT hand/NN
+is/VBZ it/PRP ?’/VBZ Alice/NNP panted/VBD as/IN she/PRP
+that/IN it/PRP made/VBD Alice/NNP quite/RB hungry/JJ to/TO
+Alice/NNP had/VBD never/RB been/VBN
+jury-box/NN ,’/, thought/VBD Alice/NNP ,/, ‘/NNP and/CC
+they/PRP doing/VBG ?’/JJ Alice/NNP whispered/VBN to/TO the/DT
+Stupid/NNP things/NNS !’/VBP Alice/NNP began/VBD in/IN a/DT
+Alice/NNP could/MD see/VB ,/,
+over/IN !’/NNP thought/VBD Alice/NNP ./.
+of/IN course/NN ,/, Alice/NNP could/MD not/RB stand/VB
+at/IN this/DT moment/NN Alice/NNP felt/VBD a/DT very/RB
+it/PRP ,’/VB said/VBD Alice/NNP very/NNP meekly/NN :/:
+nonsense/NN ,’/, said/VBD Alice/NNP more/RBR boldly/RB :/:
+done/NN ,’/, thought/VBD Alice/NNP ./.
+guinea-pigs/JJ !’/NNP thought/VBD Alice/NNP ./.
+hand/NN ,/, and/CC Alice/NNP guessed/VBD who/WP it/PRP
+forehead/NN ache/NN !’/. Alice/NNP watched/VBD the/DT White/NNP
+the/DT name/NN ‘/VBZ Alice/NNP !’/.
+Here/RB !’/VBZ cried/VBN Alice/NNP ,/, quite/RB forgetting/VBG
+looking/VBG hard/JJ at/IN Alice/NNP as/IN he/PRP said/VBD
+Alice/NNP looked/VBD at/IN the/DT
+King/NNP said/VBD to/TO Alice/NNP ./.
+Nothing/NN ,’/NNP said/VBD Alice/NNP ./.
+whatever/WDT ,’/, said/VBD Alice/NNP ./.
+‘/NN unimportant/JJ .’/NNP Alice/NNP could/MD see/VB this/DT
+Everybody/NNP looked/VBD at/IN Alice/NNP ./.
+high/JJ ,’/NN said/VBD Alice/NNP ./.
+rate/NN ,’/, said/VBD Alice/NNP :/: ‘/NN besides/IN
+One/CD ,’/NN said/VBD Alice/NNP ./.
+sort/NN !’/NNP said/VBD Alice/NNP ./.
+it/PRP ,’/, said/VBD Alice/NNP ,/, (/NNP she/PRP
+YOU/PRP ,”’/, said/VBD Alice/NNP ./.
+nonsense/NN !’/NNS said/VBD Alice/NNP loudly/RB ./.
+won’t/VBP !’/NNP said/VBD Alice/NNP ./.
+you/PRP ?’/VBP said/VBD Alice/NNP ,/, (/NNP she/PRP
+Wake/NNP up/IN ,/, Alice/NNP dear/JJ !’/NNP said/VBD
+dream/NN !’/NNP said/VBD Alice/NNP ,/, and/CC she/PRP
+late/JJ .’/NNS So/RB Alice/NNP got/VBD up/IN and/CC
+thinking/VBG of/IN little/JJ Alice/NNP and/CC all/DT her/PRP$
+dreamed/VBN of/IN little/JJ Alice/NNP herself/PRP ,/, and/CC

@@ -130,18 +130,17 @@ flattenParagraphLines :: Seq Text -> Text
 flattenParagraphLines = Alice.Render.concatTextWords . fmap Text.strip
 
 contextualizeWords :: BeforeCount -> AfterCount -> Seq Word -> Seq WordContext
-contextualizeWords (BeforeCount beforeCount) (AfterCount afterCount) allItems = go Seq.empty (Seq.drop 1 allItems) allItems
+contextualizeWords = contextualizeItems WordContext
+
+contextualizeItems :: (Seq a -> a -> Seq a -> b) -> BeforeCount -> AfterCount -> Seq a -> Seq b
+contextualizeItems f (BeforeCount beforeCount) (AfterCount afterCount) allItems = go Seq.empty (Seq.drop 1 allItems) allItems
   where
   go _ _ Seq.Empty = Seq.empty
   go beforeItems afterItems (word :<| rest) =
     let
       trimmedBefore = reduceToSizeFromLeft beforeCount beforeItems
       trimmedAfter = reduceToSizeFromRight afterCount afterItems
-    in WordContext
-      { wordContextBefore = trimmedBefore
-      , wordContextWord = word
-      , wordContextAfter = trimmedAfter
-      }
+    in f trimmedBefore word trimmedAfter
       :<| go (trimmedBefore :|> word) (Seq.drop 1 rest) rest
 
 reduceToSizeFromLeft :: Int -> Seq a -> Seq a

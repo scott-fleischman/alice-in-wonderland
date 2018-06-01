@@ -4,6 +4,7 @@ dependencies:
 - aeson
 - base
 - bytestring
+- chatter
 - containers
 - filepath
 - lens

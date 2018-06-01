@@ -151,4 +151,5 @@ main :: IO ()
 main = do
   Alice.Tweets.createTweetsFile "data/tweets.json"
   Alice.Words.createTopWordsFile "output/top-words.txt"
+  Alice.Words.createPartOfSpeechFile "output/alice-adjectives.txt"
   -- run Alice.TextFile.textFilePath
