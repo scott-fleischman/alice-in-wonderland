@@ -9,6 +9,7 @@ import qualified Alice.Sentence
 import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Alice.Tweets
+import qualified Alice.Words
 import qualified Data.Char as Char
 import qualified Data.Foldable as Foldable
 import qualified Data.Maybe as Maybe
@@ -149,4 +150,5 @@ printParagraphFormat Alice.Structure.ParagraphFormatChorusMarker = do
 main :: IO ()
 main = do
   Alice.Tweets.createTweetsFile "data/tweets.json"
-  run Alice.TextFile.textFilePath
+  Alice.Words.createTopWordsFile "output/top-words.txt"
+  -- run Alice.TextFile.textFilePath
