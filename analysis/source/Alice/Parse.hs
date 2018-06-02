@@ -1,3 +1,5 @@
+-- | Parse Gutenberg text into chapters and paragraphs with indentation differences.
+
 {-# LANGUAGE OverloadedStrings #-}
 
 module Alice.Parse where
@@ -11,6 +13,7 @@ import           Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Text.Numeral.Roman as Numeral.Roman
 
+-- all of the possible parsing errors
 data Error
   = NoGutenbergStartFound
   | NoGutenbergEndFound
@@ -27,14 +30,23 @@ data Error
   | LaterEditionMissingCloseBracket Text
   deriving Show
 
+-- main parsing function
 parseBody :: Text -> Either Error Body
 parseBody input = do
   let lineSequence = makeLineSequence input
+
+  -- parse out the Gutenberg preamble and postlude
   (preamble, afterPreamble) <- parsePreambleFromLeft lineSequence
   (beforePostlude, postlude) <- parsePostludeFromRight afterPreamble
   (beforeTheEnd, theEnd) <- parseTheEndFromRight beforePostlude
+
+  -- parse out the title of the document
   (title, afterTitle) <- parseTitleFromLeft beforeTheEnd
+
+  -- parse each chapter (which parses paragraphs too)
   chapters <- parseAllChaptersFromLeft afterTitle
+
+  -- return all of the above structure
   return
     Body
     { bodyPreamble = preamble
@@ -44,9 +56,11 @@ parseBody input = do
     , bodyPostlude = postlude
     }
 
+-- parse Gutenberg text into lines using the Windows line ending pattern
 makeLineSequence :: Text -> Seq Text
 makeLineSequence = Seq.fromList . Text.splitOn "\r\n"
 
+-- parse the text from the beginning up to and including the Gutenberg preamble
 parsePreambleFromLeft :: Seq Text -> Either Error (GutenbergPreamble, Seq Text)
 parsePreambleFromLeft = go (GutenbergPreamble Seq.empty)
   where
@@ -57,6 +71,7 @@ parsePreambleFromLeft = go (GutenbergPreamble Seq.empty)
       then Right (newPreamble, rest)
       else go newPreamble rest
 
+-- parse the text from the "right" (end of the document) to extract the Gutenberg postlude
 parsePostludeFromRight :: Seq Text -> Either Error (Seq Text, GutenbergPostlude)
 parsePostludeFromRight = go (GutenbergPostlude Seq.empty)
   where
@@ -67,12 +82,14 @@ parsePostludeFromRight = go (GutenbergPostlude Seq.empty)
       then Right (rest, newPostlude)
       else go newPostlude rest
 
+-- parse the "THE END" text from the end of the document
 parseTheEndFromRight :: Seq Text -> Either Error (Seq Text, TheEnd)
 parseTheEndFromRight Seq.Empty = Left NoTheEndFound
 parseTheEndFromRight (rest :|> line) | (Text.null . Text.strip) line = parseTheEndFromRight rest
 parseTheEndFromRight (rest :|> line) | Text.strip line == "THE END" = Right (rest, TheEnd line)
 parseTheEndFromRight (_ :|> line) = Left $ NonTheEndTextFoundAtEnd line
 
+-- parse the title text from the start of the document
 parseTitleFromLeft :: Seq Text -> Either Error (BookTitle, Seq Text)
 parseTitleFromLeft = go (BookTitle Seq.empty)
   where
@@ -82,6 +99,7 @@ parseTitleFromLeft = go (BookTitle Seq.empty)
       then Right (BookTitle soFar, line <| rest)
       else go (BookTitle (line <| soFar)) rest
 
+-- parse the chapters starting from the beginning
 parseAllChaptersFromLeft :: Seq Text -> Either Error (Seq Chapter)
 parseAllChaptersFromLeft = go Seq.empty
   where
@@ -91,6 +109,7 @@ parseAllChaptersFromLeft = go Seq.empty
       Nothing -> return chapters
       Just (chapter, rest) -> go (chapters |> chapter) rest
 
+-- parse a single chapter and preserve remaining text for more parsing (more chapters or end of document)
 parseChapterFromLeft :: Seq Text -> Either Error (Maybe (Chapter, Seq Text))
 parseChapterFromLeft Seq.Empty = Right Nothing
 parseChapterFromLeft (line :<| rest) | (Text.null . Text.strip) line = parseChapterFromLeft rest
@@ -103,17 +122,21 @@ parseChapterFromLeft (line :<| rest) | matchesChapter line =
     Right (Just (Chapter number title (ChapterContents contents) paragraphFormats, moreChapters))
 parseChapterFromLeft (line :<| _) = Left $ InvalidChapterHeading line
 
+-- break text on chapter headings, and match chapter heading with its contents
 buildContents :: ChapterContents -> Seq Text -> (ChapterContents, Seq Text)
 buildContents (ChapterContents soFar) Seq.Empty = (ChapterContents soFar, Seq.empty)
 buildContents (ChapterContents soFar) (line :<| rest) | matchesChapter line = (ChapterContents soFar, line <| rest)
 buildContents (ChapterContents soFar) (line :<| rest) = buildContents (ChapterContents (soFar |> line)) rest
 
+-- does this line match the chapter heading marker
 matchesChapter :: Text -> Bool
 matchesChapter = Text.isPrefixOf chapterPrefix
 
+-- the text that each chapter line starts with
 chapterPrefix :: Text
 chapterPrefix = "CHAPTER "
 
+-- parse a full chapter heading including parsing the roman numerals and chapter title
 parseChapterHeading :: Text -> Either Error (ChapterNumber, ChapterTitle)
 parseChapterHeading input = do
   numberDotTitle <-
@@ -133,6 +156,7 @@ parseChapterHeading input = do
       Just title -> Right title
   Right (ChapterNumber number, ChapterTitle title)
 
+-- parse a paragraph. paragraphs end on a blank line
 parseParagraphFromLeft :: Seq Text -> Either Error (ParagraphSeq, Seq Text)
 parseParagraphFromLeft Seq.Empty = Left EmptyParagraph
 parseParagraphFromLeft (line :<| rest) | Text.null line = parseParagraphFromLeft rest
@@ -140,11 +164,13 @@ parseParagraphFromLeft (line :<| rest) =
   let (ParagraphSeq soFar, finalRest) = buildParagraph (ParagraphSeq Seq.empty) rest
   in Right (ParagraphSeq (line <| soFar), finalRest)
 
+-- build the paragraph text stopping on a blank line
 buildParagraph :: ParagraphSeq -> Seq Text -> (ParagraphSeq, Seq Text)
 buildParagraph (ParagraphSeq soFar) Seq.Empty = (ParagraphSeq soFar, Seq.empty)
 buildParagraph (ParagraphSeq soFar) (line :<| rest) | Text.null line = (ParagraphSeq soFar, line :<| rest)
 buildParagraph (ParagraphSeq soFar) (line :<| rest) = buildParagraph (ParagraphSeq (soFar |> line)) rest
 
+-- parse a sequence of paragraphs that are the content of a chapter
 parseParagraphSeqs :: Seq Text -> Either Error (Seq ParagraphSeq)
 parseParagraphSeqs = go Seq.empty
   where
@@ -154,6 +180,11 @@ parseParagraphSeqs = go Seq.empty
       Left err -> Left err
       Right (p, more) -> go (paragraphs |> p) more
 
+-- parse a seequence of paragraphs into significant structure, including:
+-- * star divisions (Alice grows or shrinks)
+-- * later edition marker (this is removed from the text and preserved structurally in our data format)
+-- * chorus marker (this is removed from the raw text and preserved in our data format)
+-- * paragraphs with significant indentation (poetry or the "tail" effect)
 parseParagraphFormats :: Seq ParagraphSeq -> Either Error (Seq ParagraphFormat)
 parseParagraphFormats = go Seq.empty
   where
@@ -182,6 +213,7 @@ parseParagraphFormats = go Seq.empty
     let spacedText = Alice.Render.concatTextWords paraLines
     in go (paras |> ParagraphFormatPlain spacedText) restParas
 
+-- count the number of lines composed only of stars and spaces (indicating the "star division" described above)
 getStarParaCount :: Seq ParagraphSeq -> (Int, Seq ParagraphSeq)
 getStarParaCount = go 0
   where

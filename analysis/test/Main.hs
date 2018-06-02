@@ -1,3 +1,5 @@
+-- | Unit tests for the Alice analysis code.
+
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
@@ -15,21 +17,26 @@ import qualified Hedgehog
 import qualified System.Exit
 import           System.FilePath ((</>))
 
+-- The tests are run in a different directory, so prefix with appropriate path to find files.
 testPathPrefix :: FilePath
 testPathPrefix = ".."
 
+-- The test location of the PDF
 testPdfPath :: FilePath
 testPdfPath = testPathPrefix </> Alice.Pdf.pdfPath
 
+-- The test location of the Gutenberg text file
 testTextFilePath :: FilePath
 testTextFilePath = testPathPrefix </> Alice.TextFile.textFilePath
 
+-- Test extracting text from the PDF file
 prop_getPdfText :: Hedgehog.Property
 prop_getPdfText =
   Hedgehog.withTests 1 . Hedgehog.property $ do
     text <- liftIO $ Alice.Pdf.getPdfText testPdfPath
     Hedgehog.assert $ Data.Text.length text > 0
 
+-- Test examples of reducing a sequence to a specific size by removing from the end (right)
 prop_reduceToSizeFromRight :: Hedgehog.Property
 prop_reduceToSizeFromRight =
   Hedgehog.withTests 1 . Hedgehog.property $ do
@@ -42,6 +49,7 @@ prop_reduceToSizeFromRight =
     Seq.singleton 1 === Alice.Sentence.reduceToSizeFromRight 1 five
     Seq.empty === Alice.Sentence.reduceToSizeFromRight 0 five
 
+-- Test examples of limiting a sequence to a specific size by removing from the front (left)
 prop_reduceToSizeFromLeft :: Hedgehog.Property
 prop_reduceToSizeFromLeft =
   Hedgehog.withTests 1 . Hedgehog.property $ do
@@ -54,16 +62,19 @@ prop_reduceToSizeFromLeft =
     Seq.singleton 5 === Alice.Sentence.reduceToSizeFromLeft 1 five
     Seq.empty === Alice.Sentence.reduceToSizeFromLeft 0 five
 
+-- Test breaking up a sentence into chunks using specific punctuation.
 prop_chunkRenderingOn :: Hedgehog.Property
 prop_chunkRenderingOn =
   Hedgehog.withTests 1 . Hedgehog.property $ do
     (Seq.fromList) ["abc;", "def;", "ghi;", "jkl"] === Alice.Render.chunkRendering 6 "abc; def; ghi; jkl"
     (Seq.fromList) ["abc,", "def,", "ghi,", "jkl"] === Alice.Render.chunkRendering 6 "abc, def, ghi, jkl"
 
+-- Meta-parse this Haskell file and find all of the test functions.
 tests :: IO Bool
 tests =
   Hedgehog.checkSequential $$(Hedgehog.discover)
 
+-- Entry point for test runner
 main :: IO ()
 main = do
   isSuccess <- tests

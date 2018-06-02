@@ -1,3 +1,5 @@
+-- | Definitions of Body, Chapter and Paragraph structure in the Alice in Wonderland text.
+
 module Alice.Structure where
 
 import           Data.Sequence (Seq)
@@ -17,6 +19,7 @@ newtype AfterCount = AfterCount Int deriving (Eq, Ord, Show)
 newtype Sentence = Sentence (Seq Word) deriving (Eq, Ord, Show)
 newtype Indent = Indent Int deriving (Eq, Ord, Show)
 
+-- Represents the entire text including Gutenberg pre/postludes.
 data Body = Body
   { bodyPreamble :: GutenbergPreamble
   , bodyTitle :: BookTitle
@@ -25,6 +28,7 @@ data Body = Body
   , bodyPostlude :: GutenbergPostlude
   } deriving (Eq, Ord, Show)
 
+-- Chapter with structural paragraphs
 data Chapter = Chapter
   { chapterNumber :: ChapterNumber
   , chapterTitle :: ChapterTitle
@@ -32,24 +36,31 @@ data Chapter = Chapter
   , chapterParagraphs :: Seq ParagraphFormat
   } deriving (Eq, Ord, Show)
 
+-- A paragraph with different formatting options
 data ParagraphFormat
-  = ParagraphFormatPlain Text
-  | ParagraphFormatIndented (Seq Text)
-  | ParagraphFormatLaterEdition (Seq Text)
-  | ParagraphFormatChorusMarker
-  | ParagraphFormatStarDivision
+  = ParagraphFormatPlain Text -- plain text paragraph (just list of words)
+  | ParagraphFormatIndented (Seq Text) -- poetic text paragraph with significant indent per line
+  | ParagraphFormatLaterEdition (Seq Text) -- text that has been marked as belonging to a later edition (with the edition marker removed)
+  | ParagraphFormatChorusMarker -- the "CHORUS" marker (always the same so we don't need to preserve it)
+  | ParagraphFormatStarDivision -- the division indicated by stars which is used when Alice grows or shrinks
   deriving (Eq, Ord, Show)
 
+-- Which edition: early or later
 data EditionOption = EarlyEdition | LaterEdition deriving (Eq, Ord, Show)
+
+-- Whether a word is the last word in the paragraph or not
 data LastWordInParagraph = NotLastWordInParagraph | IsLastWordInParagraph deriving (Eq, Ord, Show)
+
+-- Word structural information
 data Word = Word
-  { wordIndent :: Indent
-  , wordPrefix :: Text
-  , wordText :: Text
-  , wordSuffix :: Text
-  , wordLast :: LastWordInParagraph
+  { wordIndent :: Indent -- How much indent (in spaces) this word has
+  , wordPrefix :: Text -- punctuation as prefix of word
+  , wordText :: Text -- the core word text itself, including inline apostrophe
+  , wordSuffix :: Text -- punctuation at end of word
+  , wordLast :: LastWordInParagraph -- whether it's the last word in the paragraph
   } deriving (Eq, Ord, Show)
 
+-- Context that has zero or more preceding words and zero or more following words
 data WordContext = WordContext
   { wordContextBefore :: Seq Word
   , wordContextWord :: Word

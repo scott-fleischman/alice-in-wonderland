@@ -1,3 +1,5 @@
+-- | Extract text from the Gutenberg PDF
+
 module Alice.Pdf where
 
 import           Data.Text (Text)
@@ -7,9 +9,11 @@ import qualified Pdf.Toolbox.Document.Page as Pdf.Page
 import qualified Pdf.Toolbox.Document.PageNode as Pdf.PageNode
 import qualified System.IO as IO
 
+-- File name of the PDF
 pdfPath :: FilePath
 pdfPath = "AliceInWonderland.pdf"
 
+-- Extract the text using the PDF library
 getPdfText :: FilePath -> IO Text
 getPdfText path = do
   result <- IO.withBinaryFile path IO.ReadMode $ \handle ->
