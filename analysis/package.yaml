@@ -1,31 +1,41 @@
-name: alice-analysis
-version: 0.2.0
+# Project definition
+
+name: alice-analysis # name used in dependency lists
+version: 0.2.0 # first two numbers are major version (breaking changes); 3rd number is minor version (compatible changes)
+
 dependencies:
-- aeson
-- base
-- bytestring
-- chatter
-- containers
-- filepath
-- lens
-- pdf-toolbox-document
-- roman-numerals
-- text
-- unordered-containers
-ghc-options:
-- -Wall
-- -Werror
+- aeson # JSON library
+- base # core Haskell library
+- bytestring # byte handling
+- chatter # NLP library: https://hackage.haskell.org/package/chatter
+- containers # Map and Set containers
+- filepath # file path handling
+- lens # structure modification
+- pdf-toolbox-document # pdf library
+- roman-numerals # parse and output roman numerals
+- text # core string library
+- unordered-containers # hash map and hash set containers
+
+ghc-options: # Glasgow Haskell Compiler options
+- -Wall # enable all warnings
+- -Werror # make warnings as errors
+
+# indicate library which can be imported by other projects
 library:
-  source-dirs: source
+  source-dirs: source # search for Haskell files in the 'source' directory
+
+# build a command-line utility
 executable:
-  source-dirs: app
-  main: Main.hs
+  source-dirs: app # search for source files in 'app'
+  main: Main.hs # indicates Haskell module with the entry point
   dependencies:
-  - alice-analysis
+  - alice-analysis # we need to depend on our library defined above; plus includes all dependencies above
+
+# test utility
 tests:
-  alice-analysis-tests:
-    source-dirs: test
-    main: Main.hs
+  alice-analysis-tests: # this is the name of our test suite
+    source-dirs: test # search for Haskell files in the 'test' directory
+    main: Main.hs # entry point for test suite
     dependencies:
-    - alice-analysis
-    - hedgehog
+    - alice-analysis # test suite depends on our library
+    - hedgehog # the test library we use

@@ -6,3 +6,6 @@ All of the code for the command-line utility to load the JSON and post it to Twi
 
 ## [TweetsData.hs](TweetsData.hs)
 A separate file which loads the JSON as a Haskell value at compile time. That way it ends up being embedded in the executable binary when compiled.
+
+## [package.yaml](package.yaml)
+Project definition with dependency list and compile flags.

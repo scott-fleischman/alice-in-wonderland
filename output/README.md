@@ -11,6 +11,8 @@ It shows:
 * all instances of "Alice" with adjacent adjectives and part-of-speech classification
 * all instances of "Alice" with surrouding words with part-of-speech classification
 
+Uses the Haskell `chatter` library for part-of-speech tagging and chunking. See details [here](https://hackage.haskell.org/package/chatter).
+
 ## [top-words.txt](top-words.txt)
 
 Show all words in the text with occurrence count ordered by descending occurrence count then by alphabetical order (if occurrence counts are identical).
