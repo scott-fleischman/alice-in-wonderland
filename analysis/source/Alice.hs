@@ -178,7 +178,7 @@ main = do
   Alice.Tweets.createTweetsFile "data/tweets.json"
 
   -- print top words file
-  Alice.Words.createTopWordsFile "output/top-words.txt"
+  Alice.Words.createTopWordsFile "stopwords/en/snowball_original.txt" "output/top-words.txt" "output/top-words-non-stop.txt"
 
   -- print adjective analysis file
   Alice.Words.createPartOfSpeechFile "output/alice-adjectives.txt"

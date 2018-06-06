@@ -16,6 +16,7 @@ import qualified Data.Ord as Ord -- data comparison code
 import           Data.Semigroup ((<>)) -- abstract string concatenation
 import           Data.Sequence (Seq) -- lists with efficient append and prepend
 import qualified Data.Sequence as Seq -- sequence library
+import qualified Data.Set as Set -- set library for efficient membership lookup
 import           Data.Text (Text) -- string type
 import qualified Data.Text as Text -- string library
 import qualified Data.Text.IO as Text.IO -- print strings
@@ -27,8 +28,8 @@ import qualified NLP.Types.Tree -- part of speech library
 import           Prelude hiding (words) -- hide the 'words' identifier so we can use it in our code
 
 -- create the list of top words file
-createTopWordsFile :: FilePath -> IO ()
-createTopWordsFile outputPath = do
+createTopWordsFile :: FilePath -> FilePath -> FilePath -> IO ()
+createTopWordsFile stopWordsFile rawOutputPath nonStopOutputPath = do
   -- load the gutenberg text file
   text <- Alice.TextFile.loadText Alice.TextFile.textFilePath
 
@@ -38,23 +39,30 @@ createTopWordsFile outputPath = do
       Left err -> error (show err) -- crash upon failure
       Right result -> return result
 
+  stopWordsSet <- fmap (Set.fromList . filter (not . Text.null) . Text.lines) $ Text.IO.readFile stopWordsFile
+
   let
     chapters = Alice.Structure.bodyChapters body
 
     -- extract words including the "later" edition text
     words = Foldable.foldMap (Alice.Sentence.allParagraphWords Alice.Structure.LaterEdition . Alice.Structure.chapterParagraphs) chapters
 
-    -- create the text output (read the following lines bottom-up)
-    output
+    -- count occurrences and make into printable text (read bottom-up)
+    makeWordsOutput
       = Text.intercalate "\n" -- add endline characters after each line
       . fmap (\(k, v) -> Text.concat [k, " ", (Text.pack . show) v]) -- print a single line with in the format "word 123"
       . countOccurences -- count the number of times each word occurs
-      . fmap (Text.toLower . Alice.Structure.wordText) -- convert words to lowercase
-      $ words
-      --- ^^^ start here and each processing step goes upwards in the code
+      -- ^^^ start processing here
 
-  -- write the text output to the file
-  Text.IO.writeFile outputPath output
+    -- all words including stop words, converted to lowercase
+    rawWords = fmap (Text.toLower . Alice.Structure.wordText) words
+
+    -- word list with stop words filtered out
+    nonStopWords = Seq.filter (\x -> not (Set.member x stopWordsSet)) rawWords
+
+  -- write the text output to the files
+  Text.IO.writeFile rawOutputPath (makeWordsOutput rawWords)
+  Text.IO.writeFile nonStopOutputPath (makeWordsOutput nonStopWords)
 
 -- Given a list (or something like a list) of words, count each time it occurs.
 -- Return a pair of the word with its occurrence count.

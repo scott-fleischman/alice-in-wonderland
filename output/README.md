@@ -20,3 +20,9 @@ Show all words in the text with occurrence count ordered by descending occurrenc
 Words have been:
 * stripped of punctuation except for the apostrophe and
 * converted to lower case
+
+## [top-words-non-stop.txt](top-words-non-stop.txt)
+
+Similar to top-words above, but shows non-stop words in the text with occurrence count ordered by descending occurrence count then by alphabetical order (if occurrence counts are identical).
+
+Stop word list is taken from [snowball_original.txt](https://github.com/igorbrigadir/stopwords/blob/21fb2ef149216e3c8cac097975223604ae1e2310/en/snowball_original.txt).
