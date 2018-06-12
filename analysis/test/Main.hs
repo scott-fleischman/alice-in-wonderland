@@ -6,6 +6,7 @@
 import qualified Alice.Pdf
 import qualified Alice.Render
 import qualified Alice.Sentence
+import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Control.Monad
 import           Control.Monad.IO.Class (liftIO)
@@ -68,6 +69,28 @@ prop_chunkRenderingOn =
   Hedgehog.withTests 1 . Hedgehog.property $ do
     (Seq.fromList) ["abc;", "def;", "ghi;", "jkl"] === Alice.Render.chunkRendering 6 "abc; def; ghi; jkl"
     (Seq.fromList) ["abc,", "def,", "ghi,", "jkl"] === Alice.Render.chunkRendering 6 "abc, def, ghi, jkl"
+
+prop_textWords :: Hedgehog.Property
+prop_textWords =
+  Hedgehog.withTests 1 . Hedgehog.property $ do
+    Alice.Sentence.textWords "think--\8217"
+      === Seq.singleton
+        Alice.Structure.Word
+        { Alice.Structure.wordIndent = Alice.Structure.Indent 0
+        , Alice.Structure.wordPrefix = ""
+        , Alice.Structure.wordText = "think"
+        , Alice.Structure.wordSuffix = "--\8217"
+        , Alice.Structure.wordLast = Alice.Structure.NotLastWordInParagraph
+        }
+    Alice.Sentence.textWords "little--\8220\8217"
+      === Seq.singleton
+        Alice.Structure.Word
+        { Alice.Structure.wordIndent = Alice.Structure.Indent 0
+        , Alice.Structure.wordPrefix = ""
+        , Alice.Structure.wordText = "little"
+        , Alice.Structure.wordSuffix = "--\8220\8217"
+        , Alice.Structure.wordLast = Alice.Structure.NotLastWordInParagraph
+        }
 
 -- Meta-parse this Haskell file and find all of the test functions.
 tests :: IO Bool

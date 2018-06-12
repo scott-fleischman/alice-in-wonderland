@@ -9,7 +9,7 @@ import qualified Alice.Sentence
 import qualified Alice.Structure
 import qualified Alice.TextFile
 import qualified Alice.Tweets
-import qualified Alice.Words
+-- import qualified Alice.Words
 
 import qualified Data.Char as Char -- character checking (is space, letter)
 import qualified Data.Foldable as Foldable -- abstract loop processing over data structures
@@ -178,10 +178,10 @@ main = do
   Alice.Tweets.createTweetsFile "data/tweets.json"
 
   -- print top words file
-  Alice.Words.createTopWordsFile "stopwords/en/snowball_original.txt" "output/top-words.txt" "output/top-words-non-stop.txt"
+  -- Alice.Words.createTopWordsFile "stopwords/en/snowball_original.txt" "output/top-words.txt" "output/top-words-non-stop.txt"
 
   -- print adjective analysis file
-  Alice.Words.createPartOfSpeechFile "output/alice-adjectives.txt"
+  -- Alice.Words.createPartOfSpeechFile "output/alice-adjectives.txt"
 
   -- uncomment next line to print debug info on the Gutenberg text file
   -- run Alice.TextFile.textFilePath
