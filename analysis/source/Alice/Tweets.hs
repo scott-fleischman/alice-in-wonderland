@@ -15,6 +15,7 @@ import qualified Data.Foldable as Foldable
 import qualified Data.Sequence as Seq
 import           Data.Text (Text)
 import qualified Data.Text as Text
+import qualified Data.Text.IO as Text.IO
 import           GHC.Generics (Generic)
 import           Prelude hiding (words)
 
@@ -55,8 +56,10 @@ createTweetsFile _outputPath = do
     isContentPara Alice.Structure.ParagraphFormatStarDivision = False
 
     paraText (Alice.Structure.ParagraphFormatPlain text) = text
-    paraText (Alice.Structure.ParagraphFormatIndented seqText) = Text.intercalate "\n" $ Foldable.toList seqText
-    paraText (Alice.Structure.ParagraphFormatLaterEdition seqText) = Text.intercalate "\n" $ Foldable.toList seqText
+    paraText (Alice.Structure.ParagraphFormatIndented seqText) =
+      Alice.Render.normalizeIndent . Text.intercalate "\n" $ Foldable.toList seqText
+    paraText (Alice.Structure.ParagraphFormatLaterEdition seqText) =
+      Alice.Render.normalizeIndent . Text.intercalate "\n" $ Foldable.toList seqText
     paraText Alice.Structure.ParagraphFormatChorusMarker = ""
     paraText Alice.Structure.ParagraphFormatStarDivision = ""
 
@@ -74,10 +77,23 @@ createTweetsFile _outputPath = do
       putStrLn "\n"
       print $ Alice.Structure.chapterNumber ch
       printParas $ Alice.Structure.chapterParagraphs ch
+    makeParaInfo para =
+      let
+        paraWords = Alice.Sentence.textWords . paraText $ para
+        renderedPara = Alice.Render.renderAllWords paraWords
+      in (renderedPara, paraWords)
+    _printPara (r, _) = do
+      putStrLn ""
+      Text.IO.putStrLn r
+    printBreaks breaks = do
+      putStrLn ""
+      mapM_ (\b -> do { Text.IO.putStr "* "; Text.IO.putStrLn b }) breaks
     printParas paras =
-      mapM_ print
-        $ Seq.filter (\(x, _) -> not $ Seq.null x)
-        $ fmap (\para -> ((Seq.filter (Text.null . Alice.Structure.wordText) . Alice.Sentence.textWords . paraText) para, para))
+      mapM_ printBreaks
+        -- $ Seq.filter ((> 1) . Seq.length . Seq.filter ((== ".") . Alice.Structure.wordSuffix) . snd)
+        $ fmap (Alice.Render.chunkRendering 280 . fst)
+        $ Seq.filter ((>280) . Text.length . fst)
+        $ fmap makeParaInfo
         $ paras
 
   mapM_ printChapter chapters
