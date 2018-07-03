@@ -24,3 +24,5 @@ cabal.project.local~
 *.cabal
 
 set-env.sh
+
+config.json
