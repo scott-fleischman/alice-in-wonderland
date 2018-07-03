@@ -22,7 +22,10 @@ renderAllWords = normalizeIndent . renderAllWordsUnnormalizedIndent
 chunkRendering :: Int -> Text -> Seq Text
 chunkRendering maxLength input
   = Maybe.fromMaybe (Seq.singleton input) $ attempt
-    [ "; " -- try breaking up the text using these characters (try the first, then the next one, etc.)
+    [ ". " -- try breaking up the text using these characters (try the first, then the next one, etc.)
+    , "! "
+    , "? "
+    , "; "
     , "’ "
     , ") "
     , ": "

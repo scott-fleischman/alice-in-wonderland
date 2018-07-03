@@ -122,14 +122,18 @@ buildWord input =
         }
 
     Just afterEmdash ->
-      Word
+      -- consume any additional punctuation after the emdash
+      let
+        punctuationAfterEmdash = Text.takeWhile Char.isPunctuation afterEmdash
+        nextWords = Text.drop (Text.length punctuationAfterEmdash) afterEmdash
+      in Word
         { wordIndent = Indent 0
         , wordPrefix = prefix
         , wordText = text
-        , wordSuffix = Text.concat [suffixBeforeEmdash, emdash]
+        , wordSuffix = Text.concat [suffixBeforeEmdash, emdash, punctuationAfterEmdash]
         , wordLast = NotLastWordInParagraph
         }
-      :<| buildWord afterEmdash
+      :<| buildWord nextWords
 
 -- extract the initial punctuation from a word
 stripPunctuationPrefix :: Text -> (Text, Text)
